@@ -2,7 +2,7 @@ namespace CarRental.Domain.Enums;
 
 public enum StatusBooking
 {
-    Pending,
+    Pending = 1,
     Confirmed,
     Cancelled,
     Completed

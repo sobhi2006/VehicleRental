@@ -2,7 +2,7 @@ namespace CarRental.Domain.Enums;
 
 public enum StatusVehicle
 {
-    Available,
+    Available = 1,
     Rented,
     Maintenance,
     Reserved,
