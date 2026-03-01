@@ -48,6 +48,9 @@ public class ClassificationService : IClassificationService
         }
 
         entity.Name = request.Name;
+        entity.Pricing.PaymentPerDay = request.Pricing.PaymentPerDay;
+        entity.Pricing.CostPerExKm = request.Pricing.CostPerExKm;
+        entity.Pricing.CostPerLateDay = request.Pricing.CostPerLateDay;
 
         await _repository.UpdateAsync(entity, cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);

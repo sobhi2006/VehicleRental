@@ -10,6 +10,7 @@ namespace CarRental.Infrastructure.Data;
 /// </summary>
 public class ApplicationDbContext : DbContext
 {
+    public DbSet<Pricing> Pricings => Set<Pricing>();
     public DbSet<MaintenanceVehicle> MaintenanceVehicles => Set<MaintenanceVehicle>();
     public DbSet<DamageVehicle> DamageVehicles => Set<DamageVehicle>();
     public DbSet<BookingVehicle> BookingVehicles => Set<BookingVehicle>();

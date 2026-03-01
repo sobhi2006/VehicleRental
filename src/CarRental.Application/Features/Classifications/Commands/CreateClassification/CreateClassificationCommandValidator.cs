@@ -35,5 +35,14 @@ public class CreateClassificationCommandValidator : AbstractValidator<CreateClas
         RuleFor(x => x.Name)
             .NotEmpty().WithMessage("Name is required.")
             .MaximumLength(500).WithMessage("Name must not exceed 500 characters.");
+
+        RuleFor(x => x.PaymentPerDay)
+            .GreaterThan(0).WithMessage("PaymentPerDay must be greater than 0.");
+    
+        RuleFor(x => x.CostPerExKm)
+            .GreaterThanOrEqualTo(0).WithMessage("CostPerExKm must be greater than or equal to 0.");
+
+        RuleFor(x => x.CostPerLateDay)
+            .GreaterThanOrEqualTo(0).WithMessage("CostPerLateDay must be greater than or equal to 0.");
     }
 }

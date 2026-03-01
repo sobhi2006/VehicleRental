@@ -28,7 +28,7 @@ public class BaseRepository<T> : IRepository<T> where T : BaseEntity
     /// </summary>
     public virtual async Task<T?> GetByIdAsync(long id, CancellationToken cancellationToken = default)
     {
-        return await _dbSet.FindAsync([id], cancellationToken);
+        return await _dbSet.FirstOrDefaultAsync(e => e.Id == id, cancellationToken);
     }
 
     /// <summary>
@@ -117,16 +117,6 @@ public class BaseRepository<T> : IRepository<T> where T : BaseEntity
     /// </summary>
     public virtual async Task<IReadOnlyList<T>> GetPagedAsync(int pageNumber, int pageSize, CancellationToken cancellationToken = default)
     {
-        if (pageNumber <= 0)
-        {
-            throw new ArgumentOutOfRangeException(nameof(pageNumber), "PageNumber must be greater than 0.");
-        }
-
-        if (pageSize <= 0)
-        {
-            throw new ArgumentOutOfRangeException(nameof(pageSize), "PageSize must be greater than 0.");
-        }
-
         return await _dbSet
             .AsNoTracking()
             .Skip((pageNumber - 1) * pageSize)
