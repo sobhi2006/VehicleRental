@@ -43,6 +43,7 @@ public static class DependencyInjection
         services.AddScoped<IBookingVehicleService, BookingVehicleService>();
         services.AddScoped<IDamageVehicleService, DamageVehicleService>();
         services.AddScoped<IMaintenanceVehicleService, MaintenanceVehicleService>();
+        services.AddScoped<ICurrencyService, CurrencyService>();
         return services;
     }
 }
