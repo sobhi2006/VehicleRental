@@ -1,0 +1,25 @@
+using MediatR;
+using CarRental.Application.Common;
+using CarRental.Application.DTOs.Payment;
+using CarRental.Domain.Enums;
+
+namespace CarRental.Application.Features.Payments.Commands.UpdatePayment;
+
+/// <summary>
+/// Command to update a Payment.
+/// </summary>
+public record UpdatePaymentCommand : IRequest<Result<PaymentDto>>
+{
+    /// <summary>Gets or sets the identifier.</summary>
+    public long Id { get; init; }
+    /// <summary>Gets or sets the BookingId.</summary>
+    public long BookingId { get; init; }
+    /// <summary>Gets or sets the CurrencyId.</summary>
+    public long CurrencyId { get; init; }
+    /// <summary>Gets or sets the Amount.</summary>
+    public decimal Amount { get; init; }
+    /// <summary>Gets or sets the Type.</summary>
+    public AmountType Type { get; init; }
+    /// <summary>Gets or sets the Status.</summary>
+    public PaymentStatus Status { get; init; }
+}
