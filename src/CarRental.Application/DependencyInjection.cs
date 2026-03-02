@@ -1,3 +1,4 @@
+using AutoMapper;
 using CarRental.Application.Services;
 using CarRental.Application.Interfaces;
 using System.Reflection;
@@ -47,6 +48,7 @@ public static class DependencyInjection
         services.AddScoped<IPaymentService, PaymentService>();
         services.AddScoped<IReturnVehicleService, ReturnVehicleService>();
         services.AddScoped<IInvoiceLineService, InvoiceLineService>();
+        services.AddScoped<IInvoiceService, InvoiceService>();
         return services;
     }
 }

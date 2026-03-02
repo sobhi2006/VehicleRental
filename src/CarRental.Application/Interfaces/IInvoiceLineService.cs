@@ -1,7 +1,5 @@
 using CarRental.Application.Common;
-using CarRental.Application.DTOs.InvoiceLine;
-using CarRental.Application.Features.InvoiceLines.Commands.CreateInvoiceLine;
-using CarRental.Application.Features.InvoiceLines.Commands.UpdateInvoiceLine;
+using CarRental.Domain.Entities;
 
 namespace CarRental.Application.Interfaces;
 
@@ -13,11 +11,11 @@ public interface IInvoiceLineService
     /// <summary>
     /// Creates a new InvoiceLine.
     /// </summary>
-    Task<Result<InvoiceLineDto>> CreateAsync(CreateInvoiceLineCommand request, CancellationToken cancellationToken);
+    Task<Result<InvoiceLine>> CreateAsync(InvoiceLine request, CancellationToken cancellationToken);
     /// <summary>
     /// Updates an existing InvoiceLine.
     /// </summary>
-    Task<Result<InvoiceLineDto>> UpdateAsync(UpdateInvoiceLineCommand request, CancellationToken cancellationToken);
+    Task<Result<InvoiceLine>> UpdateAsync(InvoiceLine request, CancellationToken cancellationToken);
     /// <summary>
     /// Deletes an existing InvoiceLine.
     /// </summary>
@@ -25,9 +23,9 @@ public interface IInvoiceLineService
     /// <summary>
     /// Gets a InvoiceLine by id.
     /// </summary>
-    Task<Result<InvoiceLineDto>> GetByIdAsync(long id, CancellationToken cancellationToken);
+    Task<Result<InvoiceLine>> GetByIdAsync(long id, CancellationToken cancellationToken);
     /// <summary>
     /// Gets all InvoiceLines with pagination.
     /// </summary>
-    Task<Result<PaginatedList<InvoiceLineDto>>> GetAllAsync(int pageNumber, int pageSize, CancellationToken cancellationToken);
+    Task<Result<PaginatedList<InvoiceLine>>> GetAllAsync(int pageNumber, int pageSize, CancellationToken cancellationToken);
 }

@@ -1,7 +1,4 @@
 using CarRental.Application.Common;
-using CarRental.Application.DTOs.InvoiceLine;
-using CarRental.Application.Features.InvoiceLines.Commands.CreateInvoiceLine;
-using CarRental.Application.Features.InvoiceLines.Commands.UpdateInvoiceLine;
 using CarRental.Application.Interfaces;
 using CarRental.Domain.Entities;
 using CarRental.Domain.Interfaces;
@@ -28,33 +25,24 @@ public class InvoiceLineService : IInvoiceLineService
     /// <summary>
     /// Creates a new InvoiceLine.
     /// </summary>
-    public async Task<Result<InvoiceLineDto>> CreateAsync(CreateInvoiceLineCommand request, CancellationToken cancellationToken)
+    public async Task<Result<InvoiceLine>> CreateAsync(InvoiceLine request, CancellationToken cancellationToken)
     {
-        var entity = new InvoiceLine
-        {
-            InvoiceId = request.InvoiceId,
-            Description = request.Description,
-            Quantity = request.Quantity,
-            UnitPrice = request.UnitPrice,
-            LineTotal = request.LineTotal,
-        };
-
-        await _repository.AddAsync(entity, cancellationToken);
+        await _repository.AddAsync(request, cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return MapToDto(entity);
+        return Result<InvoiceLine>.Success(request);
     }
 
     /// <summary>
     /// Updates an existing InvoiceLine.
     /// </summary>
-    public async Task<Result<InvoiceLineDto>> UpdateAsync(UpdateInvoiceLineCommand request, CancellationToken cancellationToken)
+    public async Task<Result<InvoiceLine>> UpdateAsync(InvoiceLine request, CancellationToken cancellationToken)
     {
         var entity = await _repository.GetByIdAsync(request.Id, cancellationToken);
 
         if (entity is null)
         {
-            return Result<InvoiceLineDto>.Failure("InvoiceLine not found.");
+            return Result<InvoiceLine>.Failure("InvoiceLine not found.");
         }
 
         entity.InvoiceId = request.InvoiceId;
@@ -66,7 +54,7 @@ public class InvoiceLineService : IInvoiceLineService
         await _repository.UpdateAsync(entity, cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return MapToDto(entity);
+        return Result<InvoiceLine>.Success(entity);
     }
 
     /// <summary>
@@ -90,60 +78,37 @@ public class InvoiceLineService : IInvoiceLineService
     /// <summary>
     /// Gets a InvoiceLine by id.
     /// </summary>
-    public async Task<Result<InvoiceLineDto>> GetByIdAsync(long id, CancellationToken cancellationToken)
+    public async Task<Result<InvoiceLine>> GetByIdAsync(long id, CancellationToken cancellationToken)
     {
         var entity = await _repository.GetByIdAsync(id, cancellationToken);
 
         if (entity is null)
         {
-            return Result<InvoiceLineDto>.Failure("InvoiceLine not found.");
+            return Result<InvoiceLine>.Failure("InvoiceLine not found.");
         }
 
-        return MapToDto(entity);
+        return Result<InvoiceLine>.Success(entity);
     }
 
     /// <summary>
     /// Gets all InvoiceLines with pagination.
     /// </summary>
-    public async Task<Result<PaginatedList<InvoiceLineDto>>> GetAllAsync(int pageNumber, int pageSize, CancellationToken cancellationToken)
+    public async Task<Result<PaginatedList<InvoiceLine>>> GetAllAsync(int pageNumber, int pageSize, CancellationToken cancellationToken)
     {
         if (pageNumber <= 0)
         {
-            return Result<PaginatedList<InvoiceLineDto>>.Failure("PageNumber must be greater than 0.");
+            return Result<PaginatedList<InvoiceLine>>.Failure("PageNumber must be greater than 0.");
         }
 
         if (pageSize <= 0)
         {
-            return Result<PaginatedList<InvoiceLineDto>>.Failure("PageSize must be greater than 0.");
+            return Result<PaginatedList<InvoiceLine>>.Failure("PageSize must be greater than 0.");
         }
 
         var totalCount = await _repository.CountAsync(cancellationToken);
         var entities = await _repository.GetPagedAsync(pageNumber, pageSize, cancellationToken);
+        var paginated = new PaginatedList<InvoiceLine>(entities, totalCount, pageNumber, pageSize);
 
-        var items = entities
-            .Select(MapToDto)
-            .ToList();
-
-        var paginated = new PaginatedList<InvoiceLineDto>(items, totalCount, pageNumber, pageSize);
-
-        return Result<PaginatedList<InvoiceLineDto>>.Success(paginated);
-    }
-
-    /// <summary>
-    /// Maps a domain entity to a DTO.
-    /// </summary>
-    private static InvoiceLineDto MapToDto(InvoiceLine entity)
-    {
-        return new InvoiceLineDto
-        {
-            Id = entity.Id,
-            InvoiceId = entity.InvoiceId,
-            Description = entity.Description,
-            Quantity = entity.Quantity,
-            UnitPrice = entity.UnitPrice,
-            LineTotal = entity.LineTotal,
-            CreatedAt = entity.CreatedAt,
-            UpdatedAt = entity.UpdatedAt
-        };
+        return Result<PaginatedList<InvoiceLine>>.Success(paginated);
     }
 }
