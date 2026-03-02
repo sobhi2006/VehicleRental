@@ -17,7 +17,7 @@ public class Vehicle : BaseEntity
     /// <summary>Gets or sets the PlateNumber.</summary>
     public string PlateNumber { get; set; } = string.Empty;
     /// <summary>Gets or sets the CurrentMileage.</summary>
-    public float CurrentMileage { get; set; }
+    public decimal CurrentMileage { get; set; }
     /// <summary>Gets or sets the ClassificationId.</summary>
     public long ClassificationId { get; set; }
     /// <summary>Gets or sets the Transmission.</summary>

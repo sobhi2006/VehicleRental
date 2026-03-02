@@ -17,7 +17,7 @@ public record CreateVehicleDto
     /// <summary>Gets or sets the PlateNumber.</summary>
     public string PlateNumber { get; init; } = string.Empty;
     /// <summary>Gets or sets the CurrentMileage.</summary>
-    public float CurrentMileage { get; init; }
+    public decimal CurrentMileage { get; init; }
     /// <summary>Gets or sets the ClassificationId.</summary>
     public long ClassificationId { get; init; }
     /// <summary>Gets or sets the Transmission.</summary>

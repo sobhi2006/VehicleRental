@@ -39,6 +39,7 @@ public static class DependencyInjection
         services.AddScoped<IPricingRepository, PricingRepository>();
         services.AddScoped<ICurrencyRepository, CurrencyRepository>();
         services.AddScoped<IPaymentRepository, PaymentRepository>();
+        services.AddScoped<IReturnVehicleRepository, ReturnVehicleRepository>();
         return services;
     }
 }
