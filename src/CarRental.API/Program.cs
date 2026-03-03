@@ -86,6 +86,12 @@ public static class Program
             await db.Database.MigrateAsync();  
         }
 
+        app.MapGet("/", () =>
+        {
+            var NumberOfEndpoints = app.Services.GetRequiredService<EndpointDataSource>().Endpoints.Count - 1;
+            return $"\t\t\t\t\t\t\t\t\t\t\t\tThe Number Of Endpoints In This Project Is {NumberOfEndpoints}";
+        });
+
         app.Run();
     }
 }
