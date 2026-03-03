@@ -10,6 +10,7 @@ namespace CarRental.Infrastructure.Data;
 /// </summary>
 public class ApplicationDbContext : DbContext
 {
+    public DbSet<BlockListCustomer> BlockListCustomers => Set<BlockListCustomer>();
     public DbSet<Invoice> Invoices => Set<Invoice>();
     public DbSet<InvoiceLine> InvoiceLines => Set<InvoiceLine>();
     public DbSet<ReturnVehicle> ReturnVehicles => Set<ReturnVehicle>();

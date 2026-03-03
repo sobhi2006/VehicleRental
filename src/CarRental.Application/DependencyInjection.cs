@@ -49,6 +49,7 @@ public static class DependencyInjection
         services.AddScoped<IReturnVehicleService, ReturnVehicleService>();
         services.AddScoped<IInvoiceLineService, InvoiceLineService>();
         services.AddScoped<IInvoiceService, InvoiceService>();
+        services.AddScoped<IBlockListCustomerService, BlockListCustomerService>();
         return services;
     }
 }

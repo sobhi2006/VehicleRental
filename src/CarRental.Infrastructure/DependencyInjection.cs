@@ -42,6 +42,7 @@ public static class DependencyInjection
         services.AddScoped<IReturnVehicleRepository, ReturnVehicleRepository>();
         services.AddScoped<IInvoiceLineRepository, InvoiceLineRepository>();
         services.AddScoped<IInvoiceRepository, InvoiceRepository>();
+        services.AddScoped<IBlockListCustomerRepository, BlockListCustomerRepository>();
         return services;
     }
 }
