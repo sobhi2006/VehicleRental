@@ -19,10 +19,6 @@ public class UpdatePersonCommandValidator : AbstractValidator<UpdatePersonComman
             .NotEmpty().WithMessage("FirstName is required.")
             .MaximumLength(500).WithMessage("FirstName must not exceed 500 characters.");
 
-        RuleFor(x => x.MiddleName)
-            .NotEmpty().WithMessage("MiddleName is required.")
-            .MaximumLength(500).WithMessage("MiddleName must not exceed 500 characters.");
-
         RuleFor(x => x.LastName)
             .NotEmpty().WithMessage("LastName is required.")
             .MaximumLength(500).WithMessage("LastName must not exceed 500 characters.");
