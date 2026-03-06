@@ -134,8 +134,10 @@ public class DriverService : IDriverService
     /// </summary>
     public Task<bool> ExistsByDriverLicenseNumberAsync(string driverLicenseNumber, CancellationToken cancellationToken)
     {
+        string normalizedLicenseNumber = driverLicenseNumber.ToUpper();
+
         return _repository.ExistsAsync(
-            d => string.Equals(d.DriverLicenseNumber, driverLicenseNumber, StringComparison.OrdinalIgnoreCase),
+            d => d.DriverLicenseNumber.ToUpper() == normalizedLicenseNumber,
             cancellationToken);
     }
 
@@ -144,9 +146,11 @@ public class DriverService : IDriverService
     /// </summary>
     public Task<bool> ExistsByDriverLicenseNumberExcludeSelfAsync(UpdateDriverCommand request, CancellationToken cancellationToken)
     {
+        string normalizedLicenseNumber = request.DriverLicenseNumber.ToUpper();
+
         return _repository.ExistsExcludeSelfAsync(
             request.Id,
-            d => string.Equals(d.DriverLicenseNumber, request.DriverLicenseNumber, StringComparison.OrdinalIgnoreCase),
+            d => d.DriverLicenseNumber.ToUpper() == normalizedLicenseNumber,
             cancellationToken);
     }
     /// <summary>

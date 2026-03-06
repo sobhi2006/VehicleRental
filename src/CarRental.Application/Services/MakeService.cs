@@ -118,7 +118,9 @@ public class MakeService : IMakeService
     /// </summary>
     public Task<bool> ExistsByNameAsync(string name, CancellationToken cancellationToken)
     {
-        return _repository.ExistsAsync(m => string.Equals(m.Name, name, StringComparison.OrdinalIgnoreCase), cancellationToken);
+        string normalizedName = name.ToUpper();
+
+        return _repository.ExistsAsync(m => m.Name.ToUpper() == normalizedName, cancellationToken);
     }
 
     /// <summary>
@@ -126,9 +128,11 @@ public class MakeService : IMakeService
     /// </summary>
     public Task<bool> ExistsByNameExcludeSelfAsync(UpdateMakeCommand request, CancellationToken cancellationToken)
     {
+        string normalizedName = request.Name.ToUpper();
+
         return _repository.ExistsExcludeSelfAsync(
             request.Id,
-            m => string.Equals(m.Name, request.Name, StringComparison.OrdinalIgnoreCase),
+            m => m.Name.ToUpper() == normalizedName,
             cancellationToken);
     }
 }

@@ -126,7 +126,9 @@ public class ClassificationService : IClassificationService
     /// </summary>
     public Task<bool> ExistsByNameAsync(string name, CancellationToken cancellationToken)
     {
-        return _repository.ExistsAsync(c => string.Equals(c.Name, name, StringComparison.OrdinalIgnoreCase), cancellationToken);
+        string normalizedName = name.ToUpper();
+
+        return _repository.ExistsAsync(c => c.Name.ToUpper() == normalizedName, cancellationToken);
     }
 
     /// <summary>
@@ -134,9 +136,11 @@ public class ClassificationService : IClassificationService
     /// </summary>
     public Task<bool> ExistsByNameExcludeSelfAsync(UpdateClassificationCommand request, CancellationToken cancellationToken)
     {
+        string normalizedName = request.Name.ToUpper();
+
         return _repository.ExistsExcludeSelfAsync(
             request.Id,
-            c => string.Equals(c.Name, request.Name, StringComparison.OrdinalIgnoreCase),
+            c => c.Name.ToUpper() == normalizedName,
             cancellationToken);
     }
 }

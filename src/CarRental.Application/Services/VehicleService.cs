@@ -125,7 +125,9 @@ public class VehicleService : IVehicleService
     /// </summary>
     public Task<bool> ExistsByVinAsync(string vin, CancellationToken cancellationToken)
     {
-        return _repository.ExistsAsync(v => string.Equals(v.VIN, vin, StringComparison.OrdinalIgnoreCase), cancellationToken);
+        string normalizedVin = vin.ToUpper();
+
+        return _repository.ExistsAsync(v => v.VIN.ToUpper() == normalizedVin, cancellationToken);
     }
 
     /// <summary>
@@ -133,9 +135,11 @@ public class VehicleService : IVehicleService
     /// </summary>
     public Task<bool> ExistsByVinExcludeSelfAsync(UpdateVehicleCommand request, CancellationToken cancellationToken)
     {
+        string normalizedVin = request.VIN.ToUpper();
+
         return _repository.ExistsExcludeSelfAsync(
             request.Id,
-            v => string.Equals(v.VIN, request.VIN, StringComparison.OrdinalIgnoreCase),
+            v => v.VIN.ToUpper() == normalizedVin,
             cancellationToken);
     }
 
@@ -144,7 +148,9 @@ public class VehicleService : IVehicleService
     /// </summary>
     public Task<bool> ExistsByPlateNumberAsync(string plateNumber, CancellationToken cancellationToken)
     {
-        return _repository.ExistsAsync(v => string.Equals(v.PlateNumber, plateNumber, StringComparison.OrdinalIgnoreCase), cancellationToken);
+        string normalizedPlateNumber = plateNumber.ToUpper();
+
+        return _repository.ExistsAsync(v => v.PlateNumber.ToUpper() == normalizedPlateNumber, cancellationToken);
     }
 
     /// <summary>
@@ -152,9 +158,11 @@ public class VehicleService : IVehicleService
     /// </summary>
     public Task<bool> ExistsByPlateNumberExcludeSelfAsync(UpdateVehicleCommand request, CancellationToken cancellationToken)
     {
+        string normalizedPlateNumber = request.PlateNumber.ToUpper();
+
         return _repository.ExistsExcludeSelfAsync(
             request.Id,
-            v => string.Equals(v.PlateNumber, request.PlateNumber, StringComparison.OrdinalIgnoreCase),
+            v => v.PlateNumber.ToUpper() == normalizedPlateNumber,
             cancellationToken);
     }
     /// <summary>

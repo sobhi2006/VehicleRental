@@ -116,7 +116,9 @@ public class FeesBankService : IFeesBankService
     /// </summary>
     public Task<bool> ExistsByNameAsync(string name, CancellationToken cancellationToken)
     {
-        return _repository.ExistsAsync(f => string.Equals(f.Name, name, StringComparison.OrdinalIgnoreCase), cancellationToken);
+        string normalizedName = name.ToUpper();
+
+        return _repository.ExistsAsync(f => f.Name.ToUpper() == normalizedName, cancellationToken);
     }
 
     /// <summary>
@@ -124,9 +126,11 @@ public class FeesBankService : IFeesBankService
     /// </summary>
     public Task<bool> ExistsByNameExcludeSelfAsync(UpdateFeesBankCommand request, CancellationToken cancellationToken)
     {
+        string normalizedName = request.Name.ToUpper();
+
         return _repository.ExistsExcludeSelfAsync(
             request.Id,
-            f => string.Equals(f.Name, request.Name, StringComparison.OrdinalIgnoreCase),
+            f => f.Name.ToUpper() == normalizedName,
             cancellationToken);
     }
 }

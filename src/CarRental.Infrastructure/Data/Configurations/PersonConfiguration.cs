@@ -20,7 +20,7 @@ public class PersonConfiguration : IEntityTypeConfiguration<Person>
         builder.Property(e => e.Id).ValueGeneratedOnAdd();
         
         builder.Property(e => e.FirstName).IsRequired().HasMaxLength(500);
-        builder.Property(e => e.MiddleName).IsRequired().HasMaxLength(500);
+        builder.Property(e => e.MiddleName).IsRequired(false).HasMaxLength(500);
         builder.Property(e => e.LastName).IsRequired().HasMaxLength(500);
         builder.Property(e => e.Email).IsRequired().HasMaxLength(500);
         builder.Property(e => e.PhoneNumber).IsRequired().HasMaxLength(500);

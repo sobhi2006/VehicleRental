@@ -140,8 +140,10 @@ public class PersonService : IPersonService
     /// </summary>
     public async Task<bool> ExistsByNationalNoAsync(string nationalNo, CancellationToken cancellationToken)
     {
+        string normalizedNationalNo = nationalNo.ToUpper();
+
         return await _repository.ExistsAsync(
-            p => string.Equals(p.NationalNo, nationalNo, StringComparison.OrdinalIgnoreCase),
+            p => p.NationalNo.ToUpper() == normalizedNationalNo,
             cancellationToken);
     }
     /// <summary>
@@ -149,9 +151,11 @@ public class PersonService : IPersonService
     /// </summary>
     public Task<bool> ExistsByNationalNoExcludeSelfAsync(UpdateNationalNoCommand request, CancellationToken cancellationToken)
     {
+        string normalizedNationalNo = request.NationalNo.ToUpper();
+
         return _repository.ExistsExcludeSelfAsync(
             request.Id,
-            p => string.Equals(p.NationalNo, request.NationalNo, StringComparison.OrdinalIgnoreCase),
+            p => p.NationalNo.ToUpper() == normalizedNationalNo,
             cancellationToken);
     }
 }

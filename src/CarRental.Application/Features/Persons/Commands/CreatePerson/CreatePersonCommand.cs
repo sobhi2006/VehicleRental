@@ -12,7 +12,7 @@ public record CreatePersonCommand : IRequest<Result<PersonDto>>
     /// <summary>Gets or sets the FirstName.</summary>
     public string FirstName { get; init; } = string.Empty;
     /// <summary>Gets or sets the MiddleName.</summary>
-    public string MiddleName { get; init; } = string.Empty;
+    public string? MiddleName { get; init; } = string.Empty;
     /// <summary>Gets or sets the LastName.</summary>
     public string LastName { get; init; } = string.Empty;
     /// <summary>Gets or sets the NationalNo.</summary>

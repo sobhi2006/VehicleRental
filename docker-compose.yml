@@ -5,14 +5,14 @@ services:
     image: mysql
     container_name: mysql-car-rental
     environment:
-      - MYSQL_ROOT_PASSWORD=sa123456sa1
+      - MYSQL_ROOT_PASSWORD=sa123456sa
       - MYSQL_DATABASE=CarRentalDb
     ports:
       - "3306:3306"
     volumes:
       - mysql_data:/var/lib/mysql
     healthcheck:
-      test: ["CMD-SHELL", "mysqladmin ping --protocol=tcp -h 127.0.0.1 -P 3306 -uroot -psa123456sa1 || exit 1"]
+      test: ["CMD-SHELL", "mysqladmin ping --protocol=tcp -h 127.0.0.1 -P 3306 -uroot -psa123456sa || exit 1"]
       interval: 5s
       timeout: 5s
       retries: 20
@@ -29,7 +29,7 @@ services:
         condition: service_healthy
     environment:
       - ASPNETCORE_URLS=http://+:5000
-      - ConnectionStrings__DefaultConnection=Server=db;Port=3306;Database=CarRentalDb;User=root;Password=sa123456sa1
+      - ConnectionStrings__DefaultConnection=Server=db;Port=3306;Database=CarRentalDb;User=root;Password=sa123456sa
 
 volumes:
   mysql_data:

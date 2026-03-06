@@ -88,8 +88,11 @@ public static class Program
 
         app.MapGet("/", () =>
         {
-            var NumberOfEndpoints = app.Services.GetRequiredService<EndpointDataSource>().Endpoints.Count - 1;
-            return $"\t\t\t\t\t\t\t\t\t\t\t\tThe Number Of Endpoints In This Project Is {NumberOfEndpoints}";
+            var Endpoints = app.Services.GetRequiredService<EndpointDataSource>().Endpoints;
+            var NumberOfEndpoints = Endpoints.Count - 1;
+            var NamesOfEndpoints = Endpoints.Select(e => e.DisplayName).Where(name => !string.IsNullOrEmpty(name)).ToList();
+            return $"\t\t\t\t\t\t\t\t\t\t\t\tThe Number Of Endpoints In This Project Is {NumberOfEndpoints}\n\n"+
+                   $"Endpoints:\n{string.Join("\n", NamesOfEndpoints)}";
         });
 
         app.Run();
