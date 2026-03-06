@@ -1,4 +1,5 @@
 using CarRental.Application.Common;
+using CarRental.Application.Features.BlockListCustomers.Commands.CreateBlockListCustomer;
 using CarRental.Application.Features.BookingVehicles.Commands.CreateBookingVehicle;
 using CarRental.Application.Features.Drivers.Commands.CreateDriver;
 using CarRental.Application.Features.Drivers.Commands.UpdateDriver;
@@ -36,4 +37,5 @@ public interface IDriverService
     Task<bool> ExistsByDriverLicenseNumberAsync(string driverLicenseNumber, CancellationToken cancellationToken);
     Task<bool> ExistsByDriverLicenseNumberExcludeSelfAsync(UpdateDriverCommand request, CancellationToken cancellationToken);
     Task<bool> IsDriverLicenseValidAsync(long driverId, CancellationToken cancellationToken);
+    Task<bool> ExistsByIdAsync(long driverId, CancellationToken cancellation);
 }

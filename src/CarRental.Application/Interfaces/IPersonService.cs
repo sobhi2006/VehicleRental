@@ -1,4 +1,5 @@
 using CarRental.Application.Common;
+using CarRental.Application.Features.Drivers.Commands.CreateDriver;
 using CarRental.Application.Features.Persons.Commands.CreatePerson;
 using CarRental.Application.Features.Persons.Commands.UpdateNationalNo;
 using CarRental.Application.Features.Persons.Commands.UpdatePerson;
@@ -34,4 +35,5 @@ public interface IPersonService
     Task<Result<Person>> UpdateNationalNoAsync(long id, string nationalNo, CancellationToken cancellationToken);
     Task<bool> ExistsByNationalNoAsync(string nationalNo, CancellationToken cancellationToken);
     Task<bool> ExistsByNationalNoExcludeSelfAsync(UpdateNationalNoCommand request, CancellationToken cancellationToken);
+    Task<bool> ExistsByIdAsync(long personId, CancellationToken cancellation);
 }

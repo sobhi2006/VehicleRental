@@ -137,4 +137,20 @@ public class CurrencyService : ICurrencyService
             UpdatedAt = entity.UpdatedAt
         };
     }
+    /// <summary>
+    /// Check if the Currency Name is found. 
+    /// </summary>
+    public async Task<bool> ExistByNameAsync(string name, CancellationToken ct)
+    {
+        var NormalizedName = name.ToUpper();
+        return await _repository.ExistsAsync(c => c.Name.ToUpper() == NormalizedName, ct);
+    }
+    /// <summary>
+    /// Check if the Currency Name is found for other Id.
+    /// </summary>
+    public async Task<bool> ExistByNameExcludeSelfAsync(long id, string name, CancellationToken ct)
+    {
+        var NormalizedName = name.ToUpper();
+        return await _repository.ExistsExcludeSelfAsync(id, c => c.Name.ToUpper() == NormalizedName, ct);
+    }
 }

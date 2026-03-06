@@ -1,3 +1,4 @@
+using CarRental.Application.Interfaces;
 using FluentValidation;
 
 namespace CarRental.Application.Features.Currencies.Commands.UpdateCurrency;
@@ -7,10 +8,19 @@ namespace CarRental.Application.Features.Currencies.Commands.UpdateCurrency;
 /// </summary>
 public class UpdateCurrencyCommandValidator : AbstractValidator<UpdateCurrencyCommand>
 {
+    private readonly ICurrencyService _currencyService;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="UpdateCurrencyCommandValidator"/> class.
     /// </summary>
-    public UpdateCurrencyCommandValidator()
+    public UpdateCurrencyCommandValidator(ICurrencyService currencyService)
+    {
+        _currencyService = currencyService;
+        ApplyCustomRules();
+        ApplyRules();
+    }
+
+    private void ApplyCustomRules()
     {
         RuleFor(x => x.Id)
             .GreaterThan(0).WithMessage("Id must be greater than 0.");
@@ -21,6 +31,15 @@ public class UpdateCurrencyCommandValidator : AbstractValidator<UpdateCurrencyCo
 
         RuleFor(x => x.ValueVsOneDollar)
             .GreaterThanOrEqualTo(0).WithMessage("ValueVsOneDollar must be greater than or equal to 0.");
+    }
 
+    private void ApplyRules()
+    {
+        RuleFor(x => x.Name)
+            .MustAsync(async (request, Name, ct) =>
+            {
+                var exists = await _currencyService.ExistByNameAsync(Name, ct);
+                return !exists;
+            }).WithMessage("Name of Currency is already exist");
     }
 }

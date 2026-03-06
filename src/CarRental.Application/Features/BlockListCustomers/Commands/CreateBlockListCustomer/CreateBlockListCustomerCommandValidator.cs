@@ -1,3 +1,4 @@
+using CarRental.Application.Interfaces;
 using FluentValidation;
 
 namespace CarRental.Application.Features.BlockListCustomers.Commands.CreateBlockListCustomer;
@@ -10,10 +11,15 @@ public class CreateBlockListCustomerCommandValidator : AbstractValidator<CreateB
     /// <summary>
     /// Initializes a new instance of the <see cref="CreateBlockListCustomerCommandValidator"/> class.
     /// </summary>
-    public CreateBlockListCustomerCommandValidator()
+    public CreateBlockListCustomerCommandValidator(IDriverService driverService)
     {
         RuleFor(x => x.DriverId)
-            .GreaterThan(0).WithMessage("DriverId must be greater than 0.");
+            .GreaterThan(0).WithMessage("DriverId must be greater than 0.")
+            .MustAsync(async (driverId, cancellation) => 
+            {
+                var exist = await driverService.ExistsByIdAsync(driverId, cancellation);
+                return exist;
+            }).WithMessage("Driver with the specified DriverId does not exist.");
 
         RuleFor(x => x.Description)
             .NotEmpty().WithMessage("Description is required.")

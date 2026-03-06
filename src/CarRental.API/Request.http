@@ -4,19 +4,23 @@
 @PageSize=10
 @Id=1
 
-### 1) Persons - Get All
+########################################
+### PERSONS COLLECTION
+########################################
+
+### Persons - Get All
 GET {{BaseUrl}}/api/v{{ApiVersion}}/Persons?pageNumber={{PageNumber}}&pageSize={{PageSize}}
 
-### 2) Persons - Get By Id
+### Persons - Get By Id
 GET {{BaseUrl}}/api/v{{ApiVersion}}/Persons/{{Id}}
 
-### 3) Persons - Create
+### Persons - Create
 POST {{BaseUrl}}/api/v{{ApiVersion}}/Persons
 Content-Type: application/json
 
 {
 	"firstName": "John",
-	"middleName": "A",
+	"middleName": null,
 	"lastName": "Doe",
 	"nationalNo": "NAT-1001",
 	"dateOfBirth": "1995-01-15",
@@ -25,7 +29,7 @@ Content-Type: application/json
 	"address": "Main street 1"
 }
 
-### 4) Persons - Update
+### Persons - Update
 PUT {{BaseUrl}}/api/v{{ApiVersion}}/Persons
 Content-Type: application/json
 
@@ -40,55 +44,63 @@ Content-Type: application/json
 	"address": "Main street 2"
 }
 
-### 5) Persons - Delete
+### Persons - Delete
 DELETE {{BaseUrl}}/api/v{{ApiVersion}}/Persons/{{Id}}
 
-### 6) Persons - Update National No
+### Persons - Update National No
 PUT {{BaseUrl}}/api/v{{ApiVersion}}/Persons/UpdateNationalNo
 Content-Type: application/json
 
 {
-	"id": 1,
+	"id": 2,
 	"nationalNo": "NAT-2001"
 }
 
-### 7) Drivers - Get All
+########################################
+### DRIVERS COLLECTION
+########################################
+
+### Drivers - Get All
 GET {{BaseUrl}}/api/v{{ApiVersion}}/Drivers?pageNumber={{PageNumber}}&pageSize={{PageSize}}
 
-### 8) Drivers - Get By Id
+### Drivers - Get By Id
 GET {{BaseUrl}}/api/v{{ApiVersion}}/Drivers/{{Id}}
 
-### 9) Drivers - Create
+### Drivers - Create
 POST {{BaseUrl}}/api/v{{ApiVersion}}/Drivers
 Content-Type: application/json
 
 {
-	"personId": 1,
+	"personId": 2,
 	"driverLicenseNumber": "DL-1001",
 	"driverLicenseExpiryDate": "2030-12-31"
 }
 
-### 10) Drivers - Update
+### Drivers - Update
 PUT {{BaseUrl}}/api/v{{ApiVersion}}/Drivers/{{Id}}
 Content-Type: application/json
 
 {
-	"id": 1,
-	"personId": 1,
+	"id": 9,
+	"personId": 2,
 	"driverLicenseNumber": "DL-1001-UPDATED",
 	"driverLicenseExpiryDate": "2031-12-31"
 }
 
-### 11) Drivers - Delete
+### Drivers - Delete
 DELETE {{BaseUrl}}/api/v{{ApiVersion}}/Drivers/{{Id}}
 
-### 12) Makes - Get All
+########################################
+### MAKES COLLECTION
+########################################
+
+### Makes - Get All
 GET {{BaseUrl}}/api/v{{ApiVersion}}/Makes?pageNumber={{PageNumber}}&pageSize={{PageSize}}
 
-### 13) Makes - Get By Id
+### Makes - Get By Id
 GET {{BaseUrl}}/api/v{{ApiVersion}}/Makes/{{Id}}
 
-### 14) Makes - Create
+### Makes - Create
 POST {{BaseUrl}}/api/v{{ApiVersion}}/Makes
 Content-Type: application/json
 
@@ -96,7 +108,7 @@ Content-Type: application/json
 	"name": "Toyota"
 }
 
-### 15) Makes - Update
+### Makes - Update
 PUT {{BaseUrl}}/api/v{{ApiVersion}}/Makes/{{Id}}
 Content-Type: application/json
 
@@ -105,177 +117,87 @@ Content-Type: application/json
 	"name": "Toyota Updated"
 }
 
-### 16) Makes - Delete
+### Makes - Delete
 DELETE {{BaseUrl}}/api/v{{ApiVersion}}/Makes/{{Id}}
 
-### 17) DamageVehicles - Get All
-GET {{BaseUrl}}/api/v{{ApiVersion}}/DamageVehicles?pageNumber={{PageNumber}}&pageSize={{PageSize}}
+########################################
+### CLASSIFICATIONS COLLECTION
+########################################
 
-### 18) DamageVehicles - Get By Id
-GET {{BaseUrl}}/api/v{{ApiVersion}}/DamageVehicles/{{Id}}
-
-### 19) DamageVehicles - Create
-POST {{BaseUrl}}/api/v{{ApiVersion}}/DamageVehicles
-Content-Type: application/json
-
-{
-	"vehicleId": 1,
-	"bookingId": 1,
-	"severity": 0,
-	"description": "Scratch on front bumper",
-	"photos": [],
-	"repairCost": 150.00,
-	"damageDate": "2026-03-06T10:00:00Z"
-}
-
-### 20) DamageVehicles - Update
-PUT {{BaseUrl}}/api/v{{ApiVersion}}/DamageVehicles/{{Id}}
-Content-Type: application/json
-
-{
-	"id": 1,
-	"vehicleId": 1,
-	"bookingId": 1,
-	"severity": 1,
-	"description": "Updated damage report",
-	"photos": [],
-	"repairCost": 200.00,
-	"damageDate": "2026-03-06T11:00:00Z"
-}
-
-### 21) DamageVehicles - Delete
-DELETE {{BaseUrl}}/api/v{{ApiVersion}}/DamageVehicles/{{Id}}
-
-### 22) Payments - Get All
-GET {{BaseUrl}}/api/v{{ApiVersion}}/Payments?pageNumber={{PageNumber}}&pageSize={{PageSize}}
-
-### 23) Payments - Get By Id
-GET {{BaseUrl}}/api/v{{ApiVersion}}/Payments/{{Id}}
-
-### 24) Payments - Create
-POST {{BaseUrl}}/api/v{{ApiVersion}}/Payments
-Content-Type: application/json
-
-{
-	"bookingId": 1,
-	"currencyId": 1,
-	"amount": 100.50,
-	"type": 0,
-	"status": 0
-}
-
-### 25) Payments - Update
-PUT {{BaseUrl}}/api/v{{ApiVersion}}/Payments/{{Id}}
-Content-Type: application/json
-
-{
-	"id": 1,
-	"bookingId": 1,
-	"currencyId": 1,
-	"amount": 120.75,
-	"type": 1,
-	"status": 1
-}
-
-### 26) Payments - Delete
-DELETE {{BaseUrl}}/api/v{{ApiVersion}}/Payments/{{Id}}
-
-### 27) BlockListCustomers - Get All
-GET {{BaseUrl}}/api/v{{ApiVersion}}/BlockListCustomers?pageNumber={{PageNumber}}&pageSize={{PageSize}}
-
-### 28) BlockListCustomers - Get By Id
-GET {{BaseUrl}}/api/v{{ApiVersion}}/BlockListCustomers/{{Id}}
-
-### 29) BlockListCustomers - Create
-POST {{BaseUrl}}/api/v{{ApiVersion}}/BlockListCustomers
-Content-Type: application/json
-
-{
-	"driverId": 1,
-	"isBlock": true,
-	"description": "Multiple policy violations"
-}
-
-### 30) BlockListCustomers - Update
-PUT {{BaseUrl}}/api/v{{ApiVersion}}/BlockListCustomers/{{Id}}
-Content-Type: application/json
-
-{
-	"id": 1,
-	"driverId": 1,
-	"isBlock": false,
-	"description": "Unblocked after review"
-}
-
-### 31) Classifications - Get All
+### Classifications - Get All
 GET {{BaseUrl}}/api/v{{ApiVersion}}/Classifications?pageNumber={{PageNumber}}&pageSize={{PageSize}}
 
-### 32) Classifications - Get By Id
+### Classifications - Get By Id
 GET {{BaseUrl}}/api/v{{ApiVersion}}/Classifications/{{Id}}
 
-### 33) Classifications - Create
+### Classifications - Create
 POST {{BaseUrl}}/api/v{{ApiVersion}}/Classifications
 Content-Type: application/json
 
 {
-	"name": "SUV"
+	"name": "SUV",
+    "PaymentPerDay": 50.00,
+    "CostPerLateDay": 20.00,
+    "CostPerExKm": 0.50
 }
 
-### 34) Classifications - Update
+### Classifications - Update
 PUT {{BaseUrl}}/api/v{{ApiVersion}}/Classifications/{{Id}}
 Content-Type: application/json
 
 {
 	"id": 1,
-	"name": "SUV Updated"
+	"name": "SUV Updated",
+    "PaymentPerDay": 55.00,
+    "CostPerLateDay": 25.00,
+    "CostPerExKm": 0.75
 }
 
-### 35) Classifications - Delete
+### Classifications - Delete
 DELETE {{BaseUrl}}/api/v{{ApiVersion}}/Classifications/{{Id}}
 
-### 36) Invoices - Get All
-GET {{BaseUrl}}/api/v{{ApiVersion}}/Invoices?pageNumber={{PageNumber}}&pageSize={{PageSize}}
+########################################
+### BLOCK LIST CUSTOMERS COLLECTION
+########################################
 
-### 37) Invoices - Get By Id
-GET {{BaseUrl}}/api/v{{ApiVersion}}/Invoices/{{Id}}
+### BlockListCustomers - Get All
+GET {{BaseUrl}}/api/v{{ApiVersion}}/BlockListCustomers?pageNumber={{PageNumber}}&pageSize={{PageSize}}
 
-### 38) Invoices - Create
-POST {{BaseUrl}}/api/v{{ApiVersion}}/Invoices
+### BlockListCustomers - Get By Id
+GET {{BaseUrl}}/api/v{{ApiVersion}}/BlockListCustomers/{{Id}}
+
+### BlockListCustomers - Create
+POST {{BaseUrl}}/api/v{{ApiVersion}}/BlockListCustomers
 Content-Type: application/json
 
 {
-	"bookingId": 1,
-	"issueDate": "2026-03-06T00:00:00Z",
-	"totalAmount": 500.00,
-	"paidAmount": 100.00,
-	"status": 0,
-	"invoiceLines": []
+	"driverId": 10,
+	"isBlock": true,
+	"description": "Multiple policy violations"
 }
 
-### 39) Invoices - Update
-PUT {{BaseUrl}}/api/v{{ApiVersion}}/Invoices/{{Id}}
+### BlockListCustomers - Update
+PUT {{BaseUrl}}/api/v{{ApiVersion}}/BlockListCustomers/{{Id}}
 Content-Type: application/json
 
 {
-	"id": 1,
-	"bookingId": 1,
-	"issueDate": "2026-03-07T00:00:00Z",
-	"totalAmount": 520.00,
-	"paidAmount": 200.00,
-	"status": 1,
-	"invoiceLines": []
+	"id": 2,
+	"driverId": 10,
+	"isBlock": false,
+	"description": "Unblocked after review"
 }
 
-### 40) Invoices - Delete
-DELETE {{BaseUrl}}/api/v{{ApiVersion}}/Invoices/{{Id}}
+########################################
+### FEES BANKS COLLECTION
+########################################
 
-### 41) FeesBanks - Get All
+### FeesBanks - Get All
 GET {{BaseUrl}}/api/v{{ApiVersion}}/FeesBanks?pageNumber={{PageNumber}}&pageSize={{PageSize}}
 
-### 42) FeesBanks - Get By Id
+### FeesBanks - Get By Id
 GET {{BaseUrl}}/api/v{{ApiVersion}}/FeesBanks/{{Id}}
 
-### 43) FeesBanks - Create
+### FeesBanks - Create
 POST {{BaseUrl}}/api/v{{ApiVersion}}/FeesBanks
 Content-Type: application/json
 
@@ -284,7 +206,7 @@ Content-Type: application/json
 	"amount": 25.00
 }
 
-### 44) FeesBanks - Update
+### FeesBanks - Update
 PUT {{BaseUrl}}/api/v{{ApiVersion}}/FeesBanks/{{Id}}
 Content-Type: application/json
 
@@ -294,88 +216,52 @@ Content-Type: application/json
 	"amount": 30.00
 }
 
-### 45) FeesBanks - Delete
+### FeesBanks - Delete
 DELETE {{BaseUrl}}/api/v{{ApiVersion}}/FeesBanks/{{Id}}
 
-### 46) MaintenanceVehicles - Get All
-GET {{BaseUrl}}/api/v{{ApiVersion}}/MaintenanceVehicles?pageNumber={{PageNumber}}&pageSize={{PageSize}}
+########################################
+### CURRENCIES COLLECTION
+########################################
 
-### 47) MaintenanceVehicles - Get By Id
-GET {{BaseUrl}}/api/v{{ApiVersion}}/MaintenanceVehicles/{{Id}}
+### Currencies - Get All
+GET {{BaseUrl}}/api/v{{ApiVersion}}/Currencies?pageNumber={{PageNumber}}&pageSize={{PageSize}}
 
-### 48) MaintenanceVehicles - Create
-POST {{BaseUrl}}/api/v{{ApiVersion}}/MaintenanceVehicles
+### Currencies - Get By Id
+GET {{BaseUrl}}/api/v{{ApiVersion}}/Currencies/{{Id}}
+
+### Currencies - Create
+POST {{BaseUrl}}/api/v{{ApiVersion}}/Currencies
 Content-Type: application/json
 
 {
-	"vehicleId": 1,
-	"cost": 80.00,
-	"startDate": "2026-03-06T08:00:00Z",
-	"endDate": "2026-03-06T12:00:00Z",
-	"notes": "Oil change",
-	"status": 0
+	"name": "USD",
+	"valueVsOneDollar": 1.0
 }
 
-### 49) MaintenanceVehicles - Update
-PUT {{BaseUrl}}/api/v{{ApiVersion}}/MaintenanceVehicles/{{Id}}
-Content-Type: application/json
-
-{
-	"id": 1,
-	"vehicleId": 1,
-	"cost": 95.00,
-	"startDate": "2026-03-06T08:00:00Z",
-	"endDate": "2026-03-06T14:00:00Z",
-	"notes": "Oil and filter change",
-	"status": 1
-}
-
-### 50) MaintenanceVehicles - Delete
-DELETE {{BaseUrl}}/api/v{{ApiVersion}}/MaintenanceVehicles/{{Id}}
-
-### 51) ReturnVehicles - Get All
-GET {{BaseUrl}}/api/v{{ApiVersion}}/ReturnVehicles?pageNumber={{PageNumber}}&pageSize={{PageSize}}
-
-### 52) ReturnVehicles - Get By Id
-GET {{BaseUrl}}/api/v{{ApiVersion}}/ReturnVehicles/{{Id}}
-
-### 53) ReturnVehicles - Create
-POST {{BaseUrl}}/api/v{{ApiVersion}}/ReturnVehicles
-Content-Type: application/json
-
-{
-	"bookingId": 1,
-	"conditionNotes": "Returned in good condition",
-	"actualReturnDate": "2026-03-06T18:00:00Z",
-	"mileageAfter": 25000,
-	"excessMileageFess": 0,
-	"damageId": null
-}
-
-### 54) ReturnVehicles - Update
-PUT {{BaseUrl}}/api/v{{ApiVersion}}/ReturnVehicles/{{Id}}
+### Currencies - Update
+PUT {{BaseUrl}}/api/v{{ApiVersion}}/Currencies/{{Id}}
 Content-Type: application/json
 
 {
 	"id": 1,
-	"bookingId": 1,
-	"conditionNotes": "Minor scratch found",
-	"actualReturnDate": "2026-03-06T19:00:00Z",
-	"mileageAfter": 25100,
-	"excessMileageFess": 10,
-	"damageId": 1
+	"name": "EUR",
+	"valueVsOneDollar": 0.92
 }
 
-### 55) ReturnVehicles - Delete
-DELETE {{BaseUrl}}/api/v{{ApiVersion}}/ReturnVehicles/{{Id}}
+### Currencies - Delete
+DELETE {{BaseUrl}}/api/v{{ApiVersion}}/Currencies/{{Id}}
 
-### 56) Vehicles - Get All
+########################################
+### VEHICLES COLLECTION
+########################################
+
+### Vehicles - Get All
 GET {{BaseUrl}}/api/v{{ApiVersion}}/Vehicles?pageNumber={{PageNumber}}&pageSize={{PageSize}}
 
-### 57) Vehicles - Get By Id
+### Vehicles - Get By Id
 GET {{BaseUrl}}/api/v{{ApiVersion}}/Vehicles/{{Id}}
 
-### 58) Vehicles - Create
+### Vehicles - Create
 POST {{BaseUrl}}/api/v{{ApiVersion}}/Vehicles
 Content-Type: application/json
 
@@ -393,7 +279,7 @@ Content-Type: application/json
 	"images": []
 }
 
-### 59) Vehicles - Update
+### Vehicles - Update
 PUT {{BaseUrl}}/api/v{{ApiVersion}}/Vehicles/{{Id}}
 Content-Type: application/json
 
@@ -412,16 +298,21 @@ Content-Type: application/json
 	"images": []
 }
 
-### 60) Vehicles - Delete
+### Vehicles - Delete
 DELETE {{BaseUrl}}/api/v{{ApiVersion}}/Vehicles/{{Id}}
 
-### 61) BookingVehicles - Get All
+
+########################################
+### BOOKING VEHICLES COLLECTION
+########################################
+
+### BookingVehicles - Get All
 GET {{BaseUrl}}/api/v{{ApiVersion}}/BookingVehicles?pageNumber={{PageNumber}}&pageSize={{PageSize}}
 
-### 62) BookingVehicles - Get By Id
+### BookingVehicles - Get By Id
 GET {{BaseUrl}}/api/v{{ApiVersion}}/BookingVehicles/{{Id}}
 
-### 63) BookingVehicles - Create
+### BookingVehicles - Create
 POST {{BaseUrl}}/api/v{{ApiVersion}}/BookingVehicles
 Content-Type: application/json
 
@@ -434,7 +325,7 @@ Content-Type: application/json
 	"dropOffDate": "2026-03-12T18:00:00Z"
 }
 
-### 64) BookingVehicles - Update
+### BookingVehicles - Update
 PUT {{BaseUrl}}/api/v{{ApiVersion}}/BookingVehicles
 Content-Type: application/json
 
@@ -448,34 +339,205 @@ Content-Type: application/json
 	"dropOffDate": "2026-03-13T18:00:00Z"
 }
 
-### 65) BookingVehicles - Delete
+### BookingVehicles - Delete
 DELETE {{BaseUrl}}/api/v{{ApiVersion}}/BookingVehicles/{{Id}}
 
-### 66) Currencies - Get All
-GET {{BaseUrl}}/api/v{{ApiVersion}}/Currencies?pageNumber={{PageNumber}}&pageSize={{PageSize}}
+########################################
+### DAMAGE VEHICLES COLLECTION
+########################################
 
-### 67) Currencies - Get By Id
-GET {{BaseUrl}}/api/v{{ApiVersion}}/Currencies/{{Id}}
+### DamageVehicles - Get All
+GET {{BaseUrl}}/api/v{{ApiVersion}}/DamageVehicles?pageNumber={{PageNumber}}&pageSize={{PageSize}}
 
-### 68) Currencies - Create
-POST {{BaseUrl}}/api/v{{ApiVersion}}/Currencies
+### DamageVehicles - Get By Id
+GET {{BaseUrl}}/api/v{{ApiVersion}}/DamageVehicles/{{Id}}
+
+### DamageVehicles - Create
+POST {{BaseUrl}}/api/v{{ApiVersion}}/DamageVehicles
 Content-Type: application/json
 
 {
-	"name": "USD",
-	"valueVsOneDollar": 1.0
+	"vehicleId": 1,
+	"bookingId": 1,
+	"severity": 0,
+	"description": "Scratch on front bumper",
+	"photos": [],
+	"repairCost": 150.00,
+	"damageDate": "2026-03-06T10:00:00Z"
 }
 
-### 69) Currencies - Update
-PUT {{BaseUrl}}/api/v{{ApiVersion}}/Currencies/{{Id}}
+### DamageVehicles - Update
+PUT {{BaseUrl}}/api/v{{ApiVersion}}/DamageVehicles/{{Id}}
 Content-Type: application/json
 
 {
 	"id": 1,
-	"name": "EUR",
-	"valueVsOneDollar": 0.92
+	"vehicleId": 1,
+	"bookingId": 1,
+	"severity": 1,
+	"description": "Updated damage report",
+	"photos": [],
+	"repairCost": 200.00,
+	"damageDate": "2026-03-06T11:00:00Z"
 }
 
-### 70) Currencies - Delete
-DELETE {{BaseUrl}}/api/v{{ApiVersion}}/Currencies/{{Id}}
+### DamageVehicles - Delete
+DELETE {{BaseUrl}}/api/v{{ApiVersion}}/DamageVehicles/{{Id}}
 
+########################################
+### PAYMENTS COLLECTION
+########################################
+
+### Payments - Get All
+GET {{BaseUrl}}/api/v{{ApiVersion}}/Payments?pageNumber={{PageNumber}}&pageSize={{PageSize}}
+
+### Payments - Get By Id
+GET {{BaseUrl}}/api/v{{ApiVersion}}/Payments/{{Id}}
+
+### Payments - Create
+POST {{BaseUrl}}/api/v{{ApiVersion}}/Payments
+Content-Type: application/json
+
+{
+	"bookingId": 1,
+	"currencyId": 1,
+	"amount": 100.50,
+	"type": 0,
+	"status": 0
+}
+
+### Payments - Update
+PUT {{BaseUrl}}/api/v{{ApiVersion}}/Payments/{{Id}}
+Content-Type: application/json
+
+{
+	"id": 1,
+	"bookingId": 1,
+	"currencyId": 1,
+	"amount": 120.75,
+	"type": 1,
+	"status": 1
+}
+
+### Payments - Delete
+DELETE {{BaseUrl}}/api/v{{ApiVersion}}/Payments/{{Id}}
+
+########################################
+### INVOICES COLLECTION
+########################################
+
+### Invoices - Get All
+GET {{BaseUrl}}/api/v{{ApiVersion}}/Invoices?pageNumber={{PageNumber}}&pageSize={{PageSize}}
+
+### Invoices - Get By Id
+GET {{BaseUrl}}/api/v{{ApiVersion}}/Invoices/{{Id}}
+
+### Invoices - Create
+POST {{BaseUrl}}/api/v{{ApiVersion}}/Invoices
+Content-Type: application/json
+
+{
+	"bookingId": 1,
+	"issueDate": "2026-03-06T00:00:00Z",
+	"totalAmount": 500.00,
+	"paidAmount": 100.00,
+	"status": 0,
+	"invoiceLines": []
+}
+
+### Invoices - Update
+PUT {{BaseUrl}}/api/v{{ApiVersion}}/Invoices/{{Id}}
+Content-Type: application/json
+
+{
+	"id": 1,
+	"bookingId": 1,
+	"issueDate": "2026-03-07T00:00:00Z",
+	"totalAmount": 520.00,
+	"paidAmount": 200.00,
+	"status": 1,
+	"invoiceLines": []
+}
+
+### Invoices - Delete
+DELETE {{BaseUrl}}/api/v{{ApiVersion}}/Invoices/{{Id}}
+
+########################################
+### MAINTENANCE VEHICLES COLLECTION
+########################################
+
+### MaintenanceVehicles - Get All
+GET {{BaseUrl}}/api/v{{ApiVersion}}/MaintenanceVehicles?pageNumber={{PageNumber}}&pageSize={{PageSize}}
+
+### MaintenanceVehicles - Get By Id
+GET {{BaseUrl}}/api/v{{ApiVersion}}/MaintenanceVehicles/{{Id}}
+
+### MaintenanceVehicles - Create
+POST {{BaseUrl}}/api/v{{ApiVersion}}/MaintenanceVehicles
+Content-Type: application/json
+
+{
+	"vehicleId": 1,
+	"cost": 80.00,
+	"startDate": "2026-03-06T08:00:00Z",
+	"endDate": "2026-03-06T12:00:00Z",
+	"notes": "Oil change",
+	"status": 0
+}
+
+### MaintenanceVehicles - Update
+PUT {{BaseUrl}}/api/v{{ApiVersion}}/MaintenanceVehicles/{{Id}}
+Content-Type: application/json
+
+{
+	"id": 1,
+	"vehicleId": 1,
+	"cost": 95.00,
+	"startDate": "2026-03-06T08:00:00Z",
+	"endDate": "2026-03-06T14:00:00Z",
+	"notes": "Oil and filter change",
+	"status": 1
+}
+
+### MaintenanceVehicles - Delete
+DELETE {{BaseUrl}}/api/v{{ApiVersion}}/MaintenanceVehicles/{{Id}}
+
+########################################
+### RETURN VEHICLES COLLECTION
+########################################
+
+### ReturnVehicles - Get All
+GET {{BaseUrl}}/api/v{{ApiVersion}}/ReturnVehicles?pageNumber={{PageNumber}}&pageSize={{PageSize}}
+
+### ReturnVehicles - Get By Id
+GET {{BaseUrl}}/api/v{{ApiVersion}}/ReturnVehicles/{{Id}}
+
+### ReturnVehicles - Create
+POST {{BaseUrl}}/api/v{{ApiVersion}}/ReturnVehicles
+Content-Type: application/json
+
+{
+	"bookingId": 1,
+	"conditionNotes": "Returned in good condition",
+	"actualReturnDate": "2026-03-06T18:00:00Z",
+	"mileageAfter": 25000,
+	"excessMileageFess": 0,
+	"damageId": null
+}
+
+### ReturnVehicles - Update
+PUT {{BaseUrl}}/api/v{{ApiVersion}}/ReturnVehicles/{{Id}}
+Content-Type: application/json
+
+{
+	"id": 1,
+	"bookingId": 1,
+	"conditionNotes": "Minor scratch found",
+	"actualReturnDate": "2026-03-06T19:00:00Z",
+	"mileageAfter": 25100,
+	"excessMileageFess": 10,
+	"damageId": 1
+}
+
+### ReturnVehicles - Delete
+DELETE {{BaseUrl}}/api/v{{ApiVersion}}/ReturnVehicles/{{Id}}

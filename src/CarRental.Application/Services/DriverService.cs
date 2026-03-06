@@ -160,4 +160,12 @@ public class DriverService : IDriverService
     {
         return _repository.ExistsAsync(d => d.Id == driverId && d.DriverLicenseExpiryDate > DateOnly.FromDateTime(DateTime.UtcNow), cancellationToken);
     }
+    /// <summary>
+    /// Checks if a Driver exists by id.
+    /// </summary>
+    /// <exception cref="NotImplementedException"></exception>
+    public async Task<bool> ExistsByIdAsync(long driverId, CancellationToken cancellation)
+    {
+        return await _repository.ExistsAsync(d => d.Id == driverId, cancellation);
+    }
 }

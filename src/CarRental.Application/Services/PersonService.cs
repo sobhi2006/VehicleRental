@@ -158,4 +158,11 @@ public class PersonService : IPersonService
             p => p.NationalNo.ToUpper() == normalizedNationalNo,
             cancellationToken);
     }
+    /// <summary>
+    /// Checks if a Person with the given id already exists.
+    /// </summary>
+    public async Task<bool> ExistsByIdAsync(long personId, CancellationToken cancellation)
+    {
+        return await _repository.ExistsAsync(p => p.Id == personId, cancellation);
+    }
 }

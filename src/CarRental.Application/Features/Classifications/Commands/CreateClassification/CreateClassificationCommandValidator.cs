@@ -40,9 +40,9 @@ public class CreateClassificationCommandValidator : AbstractValidator<CreateClas
             .GreaterThan(0).WithMessage("PaymentPerDay must be greater than 0.");
     
         RuleFor(x => x.CostPerExKm)
-            .GreaterThanOrEqualTo(0).WithMessage("CostPerExKm must be greater than or equal to 0.");
+            .GreaterThan(0).WithMessage("CostPerExKm must be greater than or equal to 0.");
 
         RuleFor(x => x.CostPerLateDay)
-            .GreaterThanOrEqualTo(0).WithMessage("CostPerLateDay must be greater than or equal to 0.");
+            .GreaterThan(0).WithMessage("CostPerLateDay must be greater than or equal to 0.");
     }
 }

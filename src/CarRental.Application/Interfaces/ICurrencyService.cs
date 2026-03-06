@@ -2,6 +2,7 @@ using CarRental.Application.Common;
 using CarRental.Application.DTOs.Currency;
 using CarRental.Application.Features.Currencies.Commands.CreateCurrency;
 using CarRental.Application.Features.Currencies.Commands.UpdateCurrency;
+using FluentValidation;
 
 namespace CarRental.Application.Interfaces;
 
@@ -30,4 +31,6 @@ public interface ICurrencyService
     /// Gets all Currencies with pagination.
     /// </summary>
     Task<Result<PaginatedList<CurrencyDto>>> GetAllAsync(int pageNumber, int pageSize, CancellationToken cancellationToken);
+    Task<bool> ExistByNameAsync(string name, CancellationToken ct);
+    Task<bool> ExistByNameExcludeSelfAsync(long id, string name, CancellationToken ct);
 }

@@ -9,18 +9,29 @@ namespace CarRental.Application.Features.Drivers.Commands.CreateDriver;
 public class CreateDriverCommandValidator : AbstractValidator<CreateDriverCommand>
 {
     private readonly IDriverService _driverService;
+    private readonly IPersonService _personService;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="CreateDriverCommandValidator"/> class.
     /// </summary>
-    public CreateDriverCommandValidator(IDriverService driverService)
+    public CreateDriverCommandValidator(IDriverService driverService, IPersonService personService)
     {
         _driverService = driverService;
+        _personService = personService;
         ApplyRules();
         ApplyCustomValidations();
     }
 
     private void ApplyCustomValidations()
     {
+        RuleFor(x => x.PersonId)
+            .MustAsync(async (personId, cancellation) =>
+            {
+                var exists = await _personService.ExistsByIdAsync(personId, cancellation);
+                return exists;
+            })
+            .WithMessage("This person not found.");
+
         RuleFor(x => x.PersonId)
             .MustAsync(async (personId, cancellation) =>
             {
@@ -46,5 +57,8 @@ public class CreateDriverCommandValidator : AbstractValidator<CreateDriverComman
         RuleFor(x => x.DriverLicenseNumber)
             .NotEmpty().WithMessage("DriverLicenseNumber is required.")
             .MaximumLength(500).WithMessage("DriverLicenseNumber must not exceed 500 characters.");
+
+        RuleFor(x => x.DriverLicenseExpiryDate)
+            .GreaterThan(DateOnly.FromDateTime(DateTime.UtcNow)).WithMessage("DriverLicenseExpiryDate must be a future date.");
     }
 }
