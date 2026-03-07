@@ -51,7 +51,7 @@ public class DamageVehicleService : IDamageVehicleService
         entity.BookingId = request.BookingId;
         entity.Severity = request.Severity;
         entity.Description = request.Description;
-        entity.Photos = request.Photos;
+        entity.Images = request.Images;
         entity.RepairCost = request.RepairCost;
         entity.DamageDate = request.DamageDate;
 

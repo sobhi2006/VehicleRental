@@ -11,13 +11,14 @@ namespace CarRental.Infrastructure.Data;
 /// </summary>
 public class ApplicationDbContext : DbContext
 {
+    public DbSet<Image> Images => Set<Image>();
     public DbSet<BlockListCustomer> BlockListCustomers => Set<BlockListCustomer>();
     public DbSet<Invoice> Invoices => Set<Invoice>();
     public DbSet<InvoiceLine> InvoiceLines => Set<InvoiceLine>();
     public DbSet<ReturnVehicle> ReturnVehicles => Set<ReturnVehicle>();
     public DbSet<Payment> Payments => Set<Payment>();
     public DbSet<Currency> Currencies => Set<Currency>();
-    public DbSet<Pricing> Pricings => Set<Pricing>();
+    public DbSet<Pricing> Pricing => Set<Pricing>();
     public DbSet<MaintenanceVehicle> MaintenanceVehicles => Set<MaintenanceVehicle>();
     public DbSet<DamageVehicle> DamageVehicles => Set<DamageVehicle>();
     public DbSet<BookingVehicle> BookingVehicles => Set<BookingVehicle>();

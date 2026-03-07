@@ -13,12 +13,9 @@ public class VehicleProfile : Profile
 {
     public VehicleProfile()
     {
-        CreateMap<CreateVehicleCommand, Vehicle>()
-            .ForMember(d => d.ImageUrl, opt => opt.MapFrom(s => s.Images.Select(i => i.FileName).ToList()));
-
-        CreateMap<UpdateVehicleCommand, Vehicle>()
-            .ForMember(d => d.ImageUrl, opt => opt.MapFrom(s => s.Images.Select(i => i.FileName).ToList()));
-
-        CreateMap<Vehicle, VehicleDto>();
+        CreateMap<CreateVehicleCommand, Vehicle>();
+        CreateMap<UpdateVehicleCommand, Vehicle>();
+        CreateMap<Vehicle, VehicleDto>()
+            .ForMember(dest => dest.ImageUrl, opt => opt.MapFrom(src => src.ImageUrl.Select(i => i.Url).ToList()));
     }
 }

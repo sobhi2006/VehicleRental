@@ -13,12 +13,9 @@ public class DamageVehicleProfile : Profile
 {
     public DamageVehicleProfile()
     {
-        CreateMap<CreateDamageVehicleCommand, DamageVehicle>()
-            .ForMember(d => d.Photos, opt => opt.MapFrom(s => s.Photos.Select(i => i.FileName).ToList()));
-
-        CreateMap<UpdateDamageVehicleCommand, DamageVehicle>()
-            .ForMember(d => d.Photos, opt => opt.MapFrom(s => s.Photos.Select(i => i.FileName).ToList()));
-
-        CreateMap<DamageVehicle, DamageVehicleDto>();
+        CreateMap<CreateDamageVehicleCommand, DamageVehicle>();
+        CreateMap<UpdateDamageVehicleCommand, DamageVehicle>();
+        CreateMap<DamageVehicle, DamageVehicleDto>()
+            .ForMember(dest => dest.Images, opt => opt.MapFrom(src => src.Images.Select(i => i.Url).ToList()));
     }
 }

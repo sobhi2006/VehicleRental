@@ -29,7 +29,7 @@ public class Vehicle : BaseEntity
     /// <summary>Gets or sets the Status.</summary>
     public StatusVehicle Status { get; set; }
     /// <summary>Gets or sets the ImageUrl.</summary>
-    public List<string> ImageUrl { get; set; } = [];
+    public List<Image> ImageUrl { get; set; } = [];
     /// <summary>Gets or sets the related Make.</summary>
     public virtual Make Make { get; set; } = null!;
     /// <summary>Gets or sets the related Classification.</summary>

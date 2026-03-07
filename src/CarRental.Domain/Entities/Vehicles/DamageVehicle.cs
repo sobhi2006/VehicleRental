@@ -16,8 +16,8 @@ public class DamageVehicle : BaseEntity
     public SeverityStatus Severity { get; set; }
     /// <summary>Gets or sets the Description.</summary>
     public string Description { get; set; } = string.Empty;
-    /// <summary>Gets or sets the Photos.</summary>
-    public List<string> Photos { get; set; } = [];
+    /// <summary>Gets or sets the Images.</summary>
+    public List<Image> Images { get; set; } = [];
     /// <summary>Gets or sets the RepairCost.</summary>
     public decimal RepairCost { get; set; }
     /// <summary>Gets or sets the DamageDate.</summary>

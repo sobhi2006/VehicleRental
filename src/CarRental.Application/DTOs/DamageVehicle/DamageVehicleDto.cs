@@ -17,8 +17,8 @@ public record DamageVehicleDto
     public SeverityStatus Severity { get; init; }
     /// <summary>Gets or sets the Description.</summary>
     public string Description { get; init; } = string.Empty;
-    /// <summary>Gets or sets the Photos.</summary>
-    public List<string> Photos { get; init; } = [];
+    /// <summary>Gets or sets the Images.</summary>
+    public List<string> Images { get; init; } = [];
     /// <summary>Gets or sets the RepairCost.</summary>
     public decimal RepairCost { get; init; }
     /// <summary>Gets or sets the DamageDate.</summary>
