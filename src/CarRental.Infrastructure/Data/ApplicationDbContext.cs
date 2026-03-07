@@ -87,6 +87,8 @@ public class ApplicationDbContext : DbContext
         Important Practical Note:
             Because ApplyConfigurationsFromAssembly(...) is called after your enum loop, 
             any explicit converter set in config classes could override this global converter for specific properties.
+            Put the enum loop before ApplyConfigurationsFromAssembly(...) to ensure all enums use the string converter by default,
+            and then override specific properties in config classes as needed.
         */
     }
 }

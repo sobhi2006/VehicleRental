@@ -272,10 +272,10 @@ Content-Type: application/json
 	"plateNumber": "ABC-123",
 	"currentMileage": 20000,
 	"classificationId": 1,
-	"transmission": 0,
-	"fuelType": 0,
+	"transmission": 1,
+	"fuelType": 1,
 	"doorsNumber": 4,
-	"status": 0,
+	"status": 1,
 	"images": []
 }
 

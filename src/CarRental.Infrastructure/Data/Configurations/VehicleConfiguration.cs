@@ -34,5 +34,7 @@ public class VehicleConfiguration : IEntityTypeConfiguration<Vehicle>
             .OnDelete(DeleteBehavior.Restrict);
 
         builder.Property(e => e.CreatedAt).IsRequired();
+        builder.Property(e => e.CurrentMileage).HasPrecision(18, 2);
+
     }
 }

@@ -2,7 +2,7 @@ namespace CarRental.Domain.Enums;
 
 public enum FuelType
 {
-    Petrol,
+    Petrol = 1,
     Diesel,
     Electric,
     Hybrid
