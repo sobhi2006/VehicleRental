@@ -2,6 +2,7 @@ using CarRental.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using CarRental.Domain.Common;
 using CarRental.Domain.Entities.Vehicles;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CarRental.Infrastructure.Data;
 
@@ -60,6 +61,32 @@ public class ApplicationDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+
+        foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+        {
+            foreach (var property in entityType.GetProperties())
+            {
+                var propertyType = property.ClrType;
+                var enumType = Nullable.GetUnderlyingType(propertyType) ?? propertyType;
+
+                if (!enumType.IsEnum)
+                {
+                    continue;
+                }
+
+                var converterType = typeof(EnumToStringConverter<>).MakeGenericType(enumType);
+                var converter = (ValueConverter)Activator.CreateInstance(converterType)!;
+
+                property.SetValueConverter(converter);
+            }
+        }
+
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
+
+        /*
+        Important Practical Note:
+            Because ApplyConfigurationsFromAssembly(...) is called after your enum loop, 
+            any explicit converter set in config classes could override this global converter for specific properties.
+        */
     }
 }
