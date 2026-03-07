@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using CarRental.Domain.Common;
 using CarRental.Domain.Entities.Vehicles;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using CarRental.Domain.Entities.ImageEntities;
 
 namespace CarRental.Infrastructure.Data;
 
@@ -11,7 +12,8 @@ namespace CarRental.Infrastructure.Data;
 /// </summary>
 public class ApplicationDbContext : DbContext
 {
-    public DbSet<Image> Images => Set<Image>();
+    public DbSet<DamageVehicleImage> DamageVehicleImages => Set<DamageVehicleImage>();
+    public DbSet<VehicleImage> VehicleImages => Set<VehicleImage>();
     public DbSet<BlockListCustomer> BlockListCustomers => Set<BlockListCustomer>();
     public DbSet<Invoice> Invoices => Set<Invoice>();
     public DbSet<InvoiceLine> InvoiceLines => Set<InvoiceLine>();

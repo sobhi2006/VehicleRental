@@ -1,4 +1,5 @@
 using CarRental.Domain.Common;
+using CarRental.Domain.Entities.ImageEntities;
 using CarRental.Domain.Enums;
 
 namespace CarRental.Domain.Entities.Vehicles;
@@ -17,7 +18,7 @@ public class DamageVehicle : BaseEntity
     /// <summary>Gets or sets the Description.</summary>
     public string Description { get; set; } = string.Empty;
     /// <summary>Gets or sets the Images.</summary>
-    public List<Image> Images { get; set; } = [];
+    public List<DamageVehicleImage> Images { get; set; } = [];
     /// <summary>Gets or sets the RepairCost.</summary>
     public decimal RepairCost { get; set; }
     /// <summary>Gets or sets the DamageDate.</summary>
