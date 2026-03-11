@@ -4,6 +4,7 @@ using CarRental.Application.Common;
 using CarRental.Application.DTOs.Vehicle;
 using CarRental.Application.Interfaces;
 using CarRental.Domain.Entities.Vehicles;
+using CarRental.Domain.Entities.ImageEntities;
 
 namespace CarRental.Application.Features.Vehicles.Commands.UpdateVehicle;
 
@@ -12,16 +13,18 @@ namespace CarRental.Application.Features.Vehicles.Commands.UpdateVehicle;
 /// </summary>
 public class UpdateVehicleCommandHandler : IRequestHandler<UpdateVehicleCommand, Result<VehicleDto>>
 {
-    private readonly IVehicleService _service;
+    private readonly IVehicleService _vehicleService;
     private readonly IMapper _mapper;
+    private readonly IImageService _imageService;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="UpdateVehicleCommandHandler"/> class.
     /// </summary>
-    public UpdateVehicleCommandHandler(IVehicleService service, IMapper mapper)
+    public UpdateVehicleCommandHandler(IVehicleService service, IMapper mapper, IImageService imageService)
     {
-        _service = service;
+        _vehicleService = service;
         _mapper = mapper;
+        _imageService = imageService;
     }
 
     /// <summary>
@@ -31,7 +34,18 @@ public class UpdateVehicleCommandHandler : IRequestHandler<UpdateVehicleCommand,
     {
         var entity = _mapper.Map<Vehicle>(request);
 
-        var result = await _service.UpdateAsync(entity, cancellationToken);
+        var uploadedImages = await Task.WhenAll(
+                    request.Images.Select(file => 
+                          _imageService.UploadImageAsync(file, "vehicles", cancellationToken)));
+
+        var result = await _vehicleService.UpdateAsync(entity, 
+                                                            uploadedImages.Select(url =>
+                                                            new VehicleImage
+                                                            {
+                                                                Url = url.Path,
+                                                                FakeName = url.FakeName,
+                                                                FileName = url.FileName 
+                                                            }).ToList(), request.ImageIDsToRemove, cancellationToken);
         return result.MapResult(value => _mapper.Map<VehicleDto>(value));
     }
 }

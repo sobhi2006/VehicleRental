@@ -50,6 +50,7 @@ public static class DependencyInjection
         services.AddScoped<IInvoiceLineService, InvoiceLineService>();
         services.AddScoped<IInvoiceService, InvoiceService>();
         services.AddScoped<IBlockListCustomerService, BlockListCustomerService>();
+        services.AddScoped<IImageService, ImageService>();
         return services;
     }
 }

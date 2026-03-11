@@ -27,10 +27,19 @@ public class VehicleRepository : BaseRepository<Vehicle>, IVehicleRepository
             && v.Status == StatusVehicle.Available, cancellationToken);
     }
 
-    // public override async Task<Vehicle?> GetByIdAsync(long id, CancellationToken cancellationToken = default)
-    // {
-    //     return await _dbSet
-    //         .Include(e => e.RelatedEntity)
-    //         .FirstOrDefaultAsync(e => e.Id == id, cancellationToken);
-    // }
+    public override async Task<Vehicle?> GetByIdAsync(long id, CancellationToken cancellationToken = default)
+    {
+        return await _dbSet
+            .Include(e => e.Images)
+            .FirstOrDefaultAsync(e => e.Id == id, cancellationToken);
+    }
+
+    public override async Task<IReadOnlyList<Vehicle>> GetPagedAsync(int pageNumber, int pageSize, CancellationToken cancellationToken = default)
+    {
+        return await _dbSet
+            .Include(e => e.Images)
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync(cancellationToken);
+    }
 }

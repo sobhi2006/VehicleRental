@@ -2,6 +2,7 @@ using CarRental.Application.Common;
 using CarRental.Application.Features.Vehicles.Commands.CreateVehicle;
 using CarRental.Application.Features.Vehicles.Commands.UpdateVehicle;
 using CarRental.Application.Interfaces;
+using CarRental.Domain.Entities.ImageEntities;
 using CarRental.Domain.Entities.Vehicles;
 using CarRental.Domain.Interfaces;
 
@@ -14,12 +15,14 @@ public class VehicleService : IVehicleService
 {
     private readonly IVehicleRepository _repository;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IImageService _imageService;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="VehicleService"/> class.
     /// </summary>
-    public VehicleService(IVehicleRepository repository, IUnitOfWork unitOfWork)
+    public VehicleService(IVehicleRepository repository, IUnitOfWork unitOfWork, IImageService imageService)
     {
+        _imageService = imageService;
         _repository = repository;
         _unitOfWork = unitOfWork;
     }
@@ -38,7 +41,7 @@ public class VehicleService : IVehicleService
     /// <summary>
     /// Updates an existing Vehicle.
     /// </summary>
-    public async Task<Result<Vehicle>> UpdateAsync(Vehicle request, CancellationToken cancellationToken)
+    public async Task<Result<Vehicle>> UpdateAsync(Vehicle request, List<VehicleImage> uploadedImages, List<long> ImageIDsToRemove, CancellationToken cancellationToken)
     {
         var entity = await _repository.GetByIdAsync(request.Id, cancellationToken);
 
@@ -46,6 +49,11 @@ public class VehicleService : IVehicleService
         {
             return Result<Vehicle>.Failure("Vehicle not found.");
         }
+
+        var ImagesUrlToRemove = entity.Images.Where(img => ImageIDsToRemove.Contains(img.Id)).Select(img => img.Url).ToList();
+        // Trick: To Keep Tracking in ef core.
+        ImageIDsToRemove.ForEach(id => entity.Images.RemoveAll(img => img.Id == id));
+        entity.Images.AddRange(uploadedImages);
 
         entity.MakeId = request.MakeId;
         entity.ModelYear = request.ModelYear;
@@ -57,11 +65,11 @@ public class VehicleService : IVehicleService
         entity.FuelType = request.FuelType;
         entity.DoorsNumber = request.DoorsNumber;
         entity.Status = request.Status;
-        entity.ImageUrl = request.ImageUrl;
 
-        await _repository.UpdateAsync(entity, cancellationToken);
+        // await _repository.UpdateAsync(entity, cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
+        await _imageService.DeleteImagesAsync(ImagesUrlToRemove, cancellationToken);
         return entity;
     }
 
@@ -171,5 +179,12 @@ public class VehicleService : IVehicleService
     public Task<bool> IsVehicleAvailableAsync(long vehicleId, DateTime pickUpDate, DateTime dropOffDate, CancellationToken cancellationToken)
     {
         return _repository.IsVehicleAvailableAsync(vehicleId, pickUpDate, dropOffDate, cancellationToken);
+    }
+    /// <summary>
+    /// Checks if a vehicle exists by its ID.
+    /// </summary>
+    public async Task<bool> IsExistById(long id, CancellationToken cancellationToken)
+    {
+        return await _repository.ExistsAsync(id, cancellationToken); 
     }
 }

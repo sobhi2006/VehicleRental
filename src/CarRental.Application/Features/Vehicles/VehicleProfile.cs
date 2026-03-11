@@ -1,4 +1,5 @@
 using AutoMapper;
+using CarRental.Application.DTOs.ImagesDto;
 using CarRental.Application.DTOs.Vehicle;
 using CarRental.Application.Features.Vehicles.Commands.CreateVehicle;
 using CarRental.Application.Features.Vehicles.Commands.UpdateVehicle;
@@ -13,9 +14,17 @@ public class VehicleProfile : Profile
 {
     public VehicleProfile()
     {
-        CreateMap<CreateVehicleCommand, Vehicle>();
-        CreateMap<UpdateVehicleCommand, Vehicle>();
+        CreateMap<CreateVehicleCommand, Vehicle>()
+            .ForMember(dest => dest.Images, opt => opt.Ignore());
+        CreateMap<UpdateVehicleCommand, Vehicle>()
+            .ForMember(dest => dest.Images, opt => opt.Ignore());
         CreateMap<Vehicle, VehicleDto>()
-            .ForMember(dest => dest.ImageUrl, opt => opt.MapFrom(src => src.ImageUrl.Select(i => i.Url).ToList()));
+            .ForMember(dest => dest.Images, 
+            opt => opt.MapFrom(src => src.Images.Select(i => 
+                                                                                    new ImageDto 
+                                                                                    {
+                                                                                        Id = i.Id,
+                                                                                        ImageUrl = i.Url 
+                                                                                    }).ToList()));
     }
 }

@@ -748,7 +748,7 @@ namespace CarRental.Infrastructure.Migrations
             modelBuilder.Entity("CarRental.Domain.Entities.ImageEntities.VehicleImage", b =>
                 {
                     b.HasOne("CarRental.Domain.Entities.Vehicles.Vehicle", "Vehicle")
-                        .WithMany("ImageUrl")
+                        .WithMany("Images")
                         .HasForeignKey("VehicleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -934,7 +934,7 @@ namespace CarRental.Infrastructure.Migrations
 
             modelBuilder.Entity("CarRental.Domain.Entities.Vehicles.Vehicle", b =>
                 {
-                    b.Navigation("ImageUrl");
+                    b.Navigation("Images");
                 });
 #pragma warning restore 612, 618
         }

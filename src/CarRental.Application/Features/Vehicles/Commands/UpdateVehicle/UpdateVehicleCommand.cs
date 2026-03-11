@@ -35,4 +35,5 @@ public record UpdateVehicleCommand : IRequest<Result<VehicleDto>>
     public StatusVehicle Status { get; init; }
     /// <summary>Gets or sets the Images.</summary>
     public List<IFormFile> Images { get; init; } = [];
+    public List<long> ImageIDsToRemove { get; set; } = [];
 }

@@ -49,6 +49,9 @@ public class UpdateVehicleCommandValidator : AbstractValidator<UpdateVehicleComm
 
         RuleFor(x => x.DoorsNumber)
             .GreaterThanOrEqualTo(0).WithMessage("DoorsNumber must be greater than or equal to 0.");
+
+        RuleFor(x => x.ImageIDsToRemove)
+            .ForEach(l => l.GreaterThan(0)).WithMessage("All ImageIDsToRemove must be greater than 0.");
     }
 
     private void ApplyCustomValidations()

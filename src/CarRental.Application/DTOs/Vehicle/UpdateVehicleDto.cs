@@ -32,4 +32,5 @@ public record UpdateVehicleDto
     public StatusVehicle Status { get; init; }
     /// <summary>Gets or sets the Images.</summary>
     public List<IFormFile> Images { get; init; } = [];
+    public List<long> ImagesIDsToRemove { get; set; } = [];
 }

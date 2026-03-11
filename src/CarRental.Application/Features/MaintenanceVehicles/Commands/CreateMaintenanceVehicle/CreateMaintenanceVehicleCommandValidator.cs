@@ -1,3 +1,5 @@
+using System.Data;
+using CarRental.Application.Interfaces;
 using FluentValidation;
 
 namespace CarRental.Application.Features.MaintenanceVehicles.Commands.CreateMaintenanceVehicle;
@@ -7,10 +9,30 @@ namespace CarRental.Application.Features.MaintenanceVehicles.Commands.CreateMain
 /// </summary>
 public class CreateMaintenanceVehicleCommandValidator : AbstractValidator<CreateMaintenanceVehicleCommand>
 {
+    private readonly IVehicleService _vehicleService;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="CreateMaintenanceVehicleCommandValidator"/> class.
     /// </summary>
-    public CreateMaintenanceVehicleCommandValidator()
+    public CreateMaintenanceVehicleCommandValidator(IVehicleService vehicleService)
+    {
+        _vehicleService = vehicleService;
+        ApplyValidation();
+        ApplyCustomValidations();
+    }
+
+    private void ApplyCustomValidations()
+    {
+        RuleFor(x => x.VehicleId)
+            .MustAsync(async (vehicleId, cancellationToken) =>
+            {
+                var vehicleExists = await _vehicleService.IsExistById(vehicleId, cancellationToken);
+                return vehicleExists;
+            })
+            .WithMessage("Vehicle not found.");
+    }
+
+    private void ApplyValidation()
     {
         RuleFor(x => x.VehicleId)
             .GreaterThan(0).WithMessage("VehicleId must be greater than 0.");
@@ -21,6 +43,5 @@ public class CreateMaintenanceVehicleCommandValidator : AbstractValidator<Create
         RuleFor(x => x.Notes)
             .NotEmpty().WithMessage("Notes is required.")
             .MaximumLength(500).WithMessage("Notes must not exceed 500 characters.");
-
     }
 }

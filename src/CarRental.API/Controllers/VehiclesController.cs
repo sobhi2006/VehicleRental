@@ -37,6 +37,7 @@ public class VehiclesController : BaseApiController
     [HttpGet("{id:long}")]
     [ProducesResponseType(typeof(VehicleDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
+
     public async Task<IActionResult> GetById(long id, CancellationToken cancellationToken)
     {
         var result = await Mediator.Send(new GetVehicleByIdQuery(id), cancellationToken);
@@ -55,7 +56,7 @@ public class VehiclesController : BaseApiController
     [HttpPost]
     [ProducesResponseType(typeof(VehicleDto), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> Create([FromBody] CreateVehicleCommand command, CancellationToken cancellationToken)
+    public async Task<IActionResult> Create([FromForm] CreateVehicleCommand command, CancellationToken cancellationToken)
     {
         var result = await Mediator.Send(command, cancellationToken);
         
@@ -75,7 +76,7 @@ public class VehiclesController : BaseApiController
     [ProducesResponseType(typeof(VehicleDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> Update([FromBody] UpdateVehicleCommand command, CancellationToken cancellationToken)
+    public async Task<IActionResult> Update([FromForm] UpdateVehicleCommand command, CancellationToken cancellationToken)
     {
         var result = await Mediator.Send(command, cancellationToken);
         

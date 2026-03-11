@@ -9,14 +9,16 @@ namespace CarRental.Application.Features.Vehicles.Commands.DeleteVehicle;
 /// </summary>
 public class DeleteVehicleCommandHandler : IRequestHandler<DeleteVehicleCommand, Result>
 {
-    private readonly IVehicleService _service;
+    private readonly IVehicleService _vehicleService;
+    private readonly IImageService _imageService;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="DeleteVehicleCommandHandler"/> class.
     /// </summary>
-    public DeleteVehicleCommandHandler(IVehicleService service)
+    public DeleteVehicleCommandHandler(IVehicleService vehicleService, IImageService imageService)
     {
-        _service = service;
+        _vehicleService = vehicleService;
+        _imageService = imageService;
     }
 
     /// <summary>
@@ -24,6 +26,12 @@ public class DeleteVehicleCommandHandler : IRequestHandler<DeleteVehicleCommand,
     /// </summary>
     public async Task<Result> Handle(DeleteVehicleCommand request, CancellationToken cancellationToken)
     {
-        return await _service.DeleteAsync(request.Id, cancellationToken);
+        var imagesUrlToRemove = await _imageService.GetImageUrlsByVehicleId(request.Id, cancellationToken);
+        var result = await _vehicleService.DeleteAsync(request.Id, cancellationToken);
+        if (result.IsSuccess)
+        {
+            await _imageService.DeleteImagesAsync(imagesUrlToRemove, cancellationToken);
+        }
+        return result;
     }
 }

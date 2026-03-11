@@ -76,6 +76,7 @@ public static class Program
             });
         });
 
+        app.UseStaticFiles();
         app.UseHttpsRedirection();
         app.UseAuthorization();
         app.MapControllers();

@@ -2,6 +2,7 @@ using CarRental.Application.Common;
 using CarRental.Application.Features.BookingVehicles.Commands.CreateBookingVehicle;
 using CarRental.Application.Features.Vehicles.Commands.CreateVehicle;
 using CarRental.Application.Features.Vehicles.Commands.UpdateVehicle;
+using CarRental.Domain.Entities.ImageEntities;
 using CarRental.Domain.Entities.Vehicles;
 
 namespace CarRental.Application.Interfaces;
@@ -18,7 +19,7 @@ public interface IVehicleService
     /// <summary>
     /// Updates an existing Vehicle.
     /// </summary>
-    Task<Result<Vehicle>> UpdateAsync(Vehicle request, CancellationToken cancellationToken);
+    Task<Result<Vehicle>> UpdateAsync(Vehicle request, List<VehicleImage> uploadedImages, List<long> ImageIDsToRemove, CancellationToken cancellationToken);
     /// <summary>
     /// Deletes an existing Vehicle.
     /// </summary>
@@ -36,4 +37,5 @@ public interface IVehicleService
     Task<bool> ExistsByPlateNumberAsync(string plateNumber, CancellationToken cancellationToken);
     Task<bool> ExistsByPlateNumberExcludeSelfAsync(UpdateVehicleCommand request, CancellationToken cancellationToken);
     Task<bool> IsVehicleAvailableAsync(long vehicleId, DateTime pickUpDate, DateTime dropOffDate, CancellationToken cancellationToken);
+    Task<bool> IsExistById(long id, CancellationToken cancellationToken);
 }

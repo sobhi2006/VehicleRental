@@ -1,4 +1,5 @@
 using CarRental.Domain.Enums;
+using CarRental.Application.DTOs.ImagesDto;
 
 namespace CarRental.Application.DTOs.Vehicle;
 
@@ -29,8 +30,8 @@ public record VehicleDto
     public int DoorsNumber { get; init; }
     /// <summary>Gets or sets the Status.</summary>
     public StatusVehicle Status { get; init; }
-    /// <summary>Gets or sets the ImageUrl.</summary>
-    public List<string> ImageUrl { get; init; } = [];
+    /// <summary>Gets or sets the Images.</summary>
+    public List<ImageDto> Images { get; init; } = [];
     /// <summary>Gets or sets the creation timestamp.</summary>
     public DateTime CreatedAt { get; init; }
     /// <summary>Gets or sets the last update timestamp.</summary>

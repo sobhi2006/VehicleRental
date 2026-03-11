@@ -301,6 +301,45 @@ Content-Type: application/json
 ### Vehicles - Delete
 DELETE {{BaseUrl}}/api/v{{ApiVersion}}/Vehicles/{{Id}}
 
+########################################
+### MAINTENANCE VEHICLES COLLECTION
+########################################
+
+### MaintenanceVehicles - Get All
+GET {{BaseUrl}}/api/v{{ApiVersion}}/MaintenanceVehicles?pageNumber={{PageNumber}}&pageSize={{PageSize}}
+
+### MaintenanceVehicles - Get By Id
+GET {{BaseUrl}}/api/v{{ApiVersion}}/MaintenanceVehicles/{{Id}}
+
+### MaintenanceVehicles - Create
+POST {{BaseUrl}}/api/v{{ApiVersion}}/MaintenanceVehicles
+Content-Type: application/json
+
+{
+	"vehicleId": 1,
+	"cost": 80.00,
+	"startDate": "2026-03-06T08:00:00Z",
+	"endDate": "2026-03-06T12:00:00Z",
+	"notes": "Oil change",
+	"status": 0
+}
+
+### MaintenanceVehicles - Update
+PUT {{BaseUrl}}/api/v{{ApiVersion}}/MaintenanceVehicles/{{Id}}
+Content-Type: application/json
+
+{
+	"id": 1,
+	"vehicleId": 1,
+	"cost": 95.00,
+	"startDate": "2026-03-06T08:00:00Z",
+	"endDate": "2026-03-06T14:00:00Z",
+	"notes": "Oil and filter change",
+	"status": 1
+}
+
+### MaintenanceVehicles - Delete
+DELETE {{BaseUrl}}/api/v{{ApiVersion}}/MaintenanceVehicles/{{Id}}
 
 ########################################
 ### BOOKING VEHICLES COLLECTION
@@ -461,46 +500,6 @@ Content-Type: application/json
 
 ### Invoices - Delete
 DELETE {{BaseUrl}}/api/v{{ApiVersion}}/Invoices/{{Id}}
-
-########################################
-### MAINTENANCE VEHICLES COLLECTION
-########################################
-
-### MaintenanceVehicles - Get All
-GET {{BaseUrl}}/api/v{{ApiVersion}}/MaintenanceVehicles?pageNumber={{PageNumber}}&pageSize={{PageSize}}
-
-### MaintenanceVehicles - Get By Id
-GET {{BaseUrl}}/api/v{{ApiVersion}}/MaintenanceVehicles/{{Id}}
-
-### MaintenanceVehicles - Create
-POST {{BaseUrl}}/api/v{{ApiVersion}}/MaintenanceVehicles
-Content-Type: application/json
-
-{
-	"vehicleId": 1,
-	"cost": 80.00,
-	"startDate": "2026-03-06T08:00:00Z",
-	"endDate": "2026-03-06T12:00:00Z",
-	"notes": "Oil change",
-	"status": 0
-}
-
-### MaintenanceVehicles - Update
-PUT {{BaseUrl}}/api/v{{ApiVersion}}/MaintenanceVehicles/{{Id}}
-Content-Type: application/json
-
-{
-	"id": 1,
-	"vehicleId": 1,
-	"cost": 95.00,
-	"startDate": "2026-03-06T08:00:00Z",
-	"endDate": "2026-03-06T14:00:00Z",
-	"notes": "Oil and filter change",
-	"status": 1
-}
-
-### MaintenanceVehicles - Delete
-DELETE {{BaseUrl}}/api/v{{ApiVersion}}/MaintenanceVehicles/{{Id}}
 
 ########################################
 ### RETURN VEHICLES COLLECTION
