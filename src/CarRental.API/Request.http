@@ -360,8 +360,8 @@ Content-Type: application/json
 	"vehicleId": 1,
 	"status": 0,
 	"notes": "Weekend booking",
-	"pickUpDate": "2026-03-10T09:00:00Z",
-	"dropOffDate": "2026-03-12T18:00:00Z"
+	"pickUpDate": "2026-03-13T15:00:00Z",
+	"dropOffDate": "2026-03-14T18:00:00Z"
 }
 
 ### BookingVehicles - Update

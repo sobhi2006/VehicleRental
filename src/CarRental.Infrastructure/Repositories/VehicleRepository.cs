@@ -23,8 +23,39 @@ public class VehicleRepository : BaseRepository<Vehicle>, IVehicleRepository
     /// </summary>
     public async Task<bool> IsVehicleAvailableAsync(long vehicleId, DateTime pickUpDate, DateTime dropOffDate, CancellationToken cancellationToken)
     {
-        return await _dbSet.AnyAsync(v => v.Id == vehicleId 
-            && v.Status == StatusVehicle.Available, cancellationToken);
+        // Vehicle must exist and be available
+        var isVehicleAvailable = await _dbSet.AnyAsync(
+            v => v.Id == vehicleId && v.Status == StatusVehicle.Available,
+            cancellationToken);
+
+        if (!isVehicleAvailable)
+        {
+            return false;
+        }
+
+        // Standard overlap rule: existingStart < requestedEnd && existingEnd > requestedStart
+        var hasMaintenanceConflict = await _context.Set<MaintenanceVehicle>().AnyAsync(
+            mv =>
+                mv.VehicleId == vehicleId &&
+                (mv.Status == MaintenanceStatus.InProgress || mv.Status == MaintenanceStatus.Scheduled) &&
+                mv.StartDate < dropOffDate &&
+                mv.EndDate > pickUpDate,
+            cancellationToken);
+
+        if (hasMaintenanceConflict)
+        {
+            return false;
+        }
+
+        var hasBookingConflict = await _context.Set<BookingVehicle>().AnyAsync(
+            bv =>
+                bv.VehicleId == vehicleId &&
+                bv.PickUpDate < dropOffDate &&
+                bv.DropOffDate > pickUpDate &&
+                (bv.Status == StatusBooking.Cancelled || bv.Status == StatusBooking.Completed),
+            cancellationToken);
+
+        return !hasBookingConflict;
     }
 
     public override async Task<Vehicle?> GetByIdAsync(long id, CancellationToken cancellationToken = default)
@@ -41,5 +72,11 @@ public class VehicleRepository : BaseRepository<Vehicle>, IVehicleRepository
             .Skip((pageNumber - 1) * pageSize)
             .Take(pageSize)
             .ToListAsync(cancellationToken);
+    }
+
+    public Task UpdateStatus(long vehicleId, StatusVehicle maintenance, CancellationToken cancellationToken)
+    {
+        return _dbSet.Where(v => v.Id == vehicleId)
+            .ExecuteUpdateAsync(s => s.SetProperty(v => v.Status, maintenance), cancellationToken);
     }
 }

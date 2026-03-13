@@ -1,7 +1,4 @@
 using CarRental.Application.Common;
-using CarRental.Application.DTOs.Currency;
-using CarRental.Application.Features.Currencies.Commands.CreateCurrency;
-using CarRental.Application.Features.Currencies.Commands.UpdateCurrency;
 using CarRental.Application.Interfaces;
 using CarRental.Domain.Entities;
 using CarRental.Domain.Interfaces;
@@ -28,30 +25,24 @@ public class CurrencyService : ICurrencyService
     /// <summary>
     /// Creates a new Currency.
     /// </summary>
-    public async Task<Result<CurrencyDto>> CreateAsync(CreateCurrencyCommand request, CancellationToken cancellationToken)
+    public async Task<Result<Currency>> CreateAsync(Currency request, CancellationToken cancellationToken)
     {
-        var entity = new Currency
-        {
-            Name = request.Name,
-            ValueVsOneDollar = request.ValueVsOneDollar,
-        };
-
-        await _repository.AddAsync(entity, cancellationToken);
+        await _repository.AddAsync(request, cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return MapToDto(entity);
+        return request;
     }
 
     /// <summary>
     /// Updates an existing Currency.
     /// </summary>
-    public async Task<Result<CurrencyDto>> UpdateAsync(UpdateCurrencyCommand request, CancellationToken cancellationToken)
+    public async Task<Result<Currency>> UpdateAsync(Currency request, CancellationToken cancellationToken)
     {
         var entity = await _repository.GetByIdAsync(request.Id, cancellationToken);
 
         if (entity is null)
         {
-            return Result<CurrencyDto>.Failure("Currency not found.");
+            return Result<Currency>.Failure("Currency not found.");
         }
 
         entity.Name = request.Name;
@@ -60,7 +51,7 @@ public class CurrencyService : ICurrencyService
         await _repository.UpdateAsync(entity, cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return MapToDto(entity);
+        return entity;
     }
 
     /// <summary>
@@ -84,58 +75,38 @@ public class CurrencyService : ICurrencyService
     /// <summary>
     /// Gets a Currency by id.
     /// </summary>
-    public async Task<Result<CurrencyDto>> GetByIdAsync(long id, CancellationToken cancellationToken)
+    public async Task<Result<Currency>> GetByIdAsync(long id, CancellationToken cancellationToken)
     {
         var entity = await _repository.GetByIdAsync(id, cancellationToken);
 
         if (entity is null)
         {
-            return Result<CurrencyDto>.Failure("Currency not found.");
+            return Result<Currency>.Failure("Currency not found.");
         }
 
-        return MapToDto(entity);
+        return entity;
     }
 
     /// <summary>
     /// Gets all Currencies with pagination.
     /// </summary>
-    public async Task<Result<PaginatedList<CurrencyDto>>> GetAllAsync(int pageNumber, int pageSize, CancellationToken cancellationToken)
+    public async Task<Result<PaginatedList<Currency>>> GetAllAsync(int pageNumber, int pageSize, CancellationToken cancellationToken)
     {
         if (pageNumber <= 0)
         {
-            return Result<PaginatedList<CurrencyDto>>.Failure("PageNumber must be greater than 0.");
+            return Result<PaginatedList<Currency>>.Failure("PageNumber must be greater than 0.");
         }
 
         if (pageSize <= 0)
         {
-            return Result<PaginatedList<CurrencyDto>>.Failure("PageSize must be greater than 0.");
+            return Result<PaginatedList<Currency>>.Failure("PageSize must be greater than 0.");
         }
 
         var totalCount = await _repository.CountAsync(cancellationToken);
-        var entities = await _repository.GetPagedAsync(pageNumber, pageSize, cancellationToken);
+        var items = await _repository.GetPagedAsync(pageNumber, pageSize, cancellationToken);
+        var paginated = new PaginatedList<Currency>(items, totalCount, pageNumber, pageSize);
 
-        var items = entities
-            .Select(MapToDto)
-            .ToList();
-
-        var paginated = new PaginatedList<CurrencyDto>(items, totalCount, pageNumber, pageSize);
-
-        return Result<PaginatedList<CurrencyDto>>.Success(paginated);
-    }
-
-    /// <summary>
-    /// Maps a domain entity to a DTO.
-    /// </summary>
-    private static CurrencyDto MapToDto(Currency entity)
-    {
-        return new CurrencyDto
-        {
-            Id = entity.Id,
-            Name = entity.Name,
-            ValueVsOneDollar = entity.ValueVsOneDollar,
-            CreatedAt = entity.CreatedAt,
-            UpdatedAt = entity.UpdatedAt
-        };
+        return Result<PaginatedList<Currency>>.Success(paginated);
     }
     /// <summary>
     /// Check if the Currency Name is found. 

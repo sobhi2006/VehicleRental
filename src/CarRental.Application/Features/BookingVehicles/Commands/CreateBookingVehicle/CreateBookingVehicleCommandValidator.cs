@@ -17,9 +17,9 @@ public class CreateBookingVehicleCommandValidator : AbstractValidator<CreateBook
     /// </summary>
     public CreateBookingVehicleCommandValidator(IDriverService driverService, IVehicleService vehicleService, IBookingVehicleService bookingVehicleService)
     {
-        this._driverService = driverService;
-        this._vehicleService = vehicleService;
-        this._bookingVehicleService = bookingVehicleService;
+        _driverService = driverService;
+        _vehicleService = vehicleService;
+        _bookingVehicleService = bookingVehicleService;
 
         ApplyRules();
         ApplyCustomValidations();

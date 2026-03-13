@@ -1,7 +1,5 @@
 using CarRental.Application.Common;
-using CarRental.Application.DTOs.ReturnVehicle;
-using CarRental.Application.Features.ReturnVehicles.Commands.CreateReturnVehicle;
-using CarRental.Application.Features.ReturnVehicles.Commands.UpdateReturnVehicle;
+using CarRental.Domain.Entities.Vehicles;
 
 namespace CarRental.Application.Interfaces;
 
@@ -13,11 +11,11 @@ public interface IReturnVehicleService
     /// <summary>
     /// Creates a new ReturnVehicle.
     /// </summary>
-    Task<Result<ReturnVehicleDto>> CreateAsync(CreateReturnVehicleCommand request, CancellationToken cancellationToken);
+    Task<Result<ReturnVehicle>> CreateAsync(ReturnVehicle request, CancellationToken cancellationToken);
     /// <summary>
     /// Updates an existing ReturnVehicle.
     /// </summary>
-    Task<Result<ReturnVehicleDto>> UpdateAsync(UpdateReturnVehicleCommand request, CancellationToken cancellationToken);
+    Task<Result<ReturnVehicle>> UpdateAsync(ReturnVehicle request, CancellationToken cancellationToken);
     /// <summary>
     /// Deletes an existing ReturnVehicle.
     /// </summary>
@@ -25,9 +23,9 @@ public interface IReturnVehicleService
     /// <summary>
     /// Gets a ReturnVehicle by id.
     /// </summary>
-    Task<Result<ReturnVehicleDto>> GetByIdAsync(long id, CancellationToken cancellationToken);
+    Task<Result<ReturnVehicle>> GetByIdAsync(long id, CancellationToken cancellationToken);
     /// <summary>
     /// Gets all ReturnVehicles with pagination.
     /// </summary>
-    Task<Result<PaginatedList<ReturnVehicleDto>>> GetAllAsync(int pageNumber, int pageSize, CancellationToken cancellationToken);
+    Task<Result<PaginatedList<ReturnVehicle>>> GetAllAsync(int pageNumber, int pageSize, CancellationToken cancellationToken);
 }

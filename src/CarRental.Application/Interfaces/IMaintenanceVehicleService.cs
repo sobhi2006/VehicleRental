@@ -1,7 +1,5 @@
 using CarRental.Application.Common;
-using CarRental.Application.DTOs.MaintenanceVehicle;
-using CarRental.Application.Features.MaintenanceVehicles.Commands.CreateMaintenanceVehicle;
-using CarRental.Application.Features.MaintenanceVehicles.Commands.UpdateMaintenanceVehicle;
+using CarRental.Domain.Entities.Vehicles;
 
 namespace CarRental.Application.Interfaces;
 
@@ -13,11 +11,11 @@ public interface IMaintenanceVehicleService
     /// <summary>
     /// Creates a new MaintenanceVehicle.
     /// </summary>
-    Task<Result<MaintenanceVehicleDto>> CreateAsync(CreateMaintenanceVehicleCommand request, CancellationToken cancellationToken);
+    Task<Result<MaintenanceVehicle>> CreateAsync(MaintenanceVehicle request, CancellationToken cancellationToken);
     /// <summary>
     /// Updates an existing MaintenanceVehicle.
     /// </summary>
-    Task<Result<MaintenanceVehicleDto>> UpdateAsync(UpdateMaintenanceVehicleCommand request, CancellationToken cancellationToken);
+    Task<Result<MaintenanceVehicle>> UpdateAsync(MaintenanceVehicle request, CancellationToken cancellationToken);
     /// <summary>
     /// Deletes an existing MaintenanceVehicle.
     /// </summary>
@@ -25,9 +23,9 @@ public interface IMaintenanceVehicleService
     /// <summary>
     /// Gets a MaintenanceVehicle by id.
     /// </summary>
-    Task<Result<MaintenanceVehicleDto>> GetByIdAsync(long id, CancellationToken cancellationToken);
+    Task<Result<MaintenanceVehicle>> GetByIdAsync(long id, CancellationToken cancellationToken);
     /// <summary>
     /// Gets all MaintenanceVehicles with pagination.
     /// </summary>
-    Task<Result<PaginatedList<MaintenanceVehicleDto>>> GetAllAsync(int pageNumber, int pageSize, CancellationToken cancellationToken);
+    Task<Result<PaginatedList<MaintenanceVehicle>>> GetAllAsync(int pageNumber, int pageSize, CancellationToken cancellationToken);
 }

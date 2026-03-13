@@ -1,4 +1,5 @@
 using MediatR;
+using AutoMapper;
 using CarRental.Application.Common;
 using CarRental.Application.DTOs.ReturnVehicle;
 using CarRental.Application.Interfaces;
@@ -11,13 +12,15 @@ namespace CarRental.Application.Features.ReturnVehicles.Queries.GetReturnVehicle
 public class GetReturnVehicleByIdQueryHandler : IRequestHandler<GetReturnVehicleByIdQuery, Result<ReturnVehicleDto>>
 {
     private readonly IReturnVehicleService _service;
+    private readonly IMapper _mapper;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="GetReturnVehicleByIdQueryHandler"/> class.
     /// </summary>
-    public GetReturnVehicleByIdQueryHandler(IReturnVehicleService service)
+    public GetReturnVehicleByIdQueryHandler(IReturnVehicleService service, IMapper mapper)
     {
         _service = service;
+        _mapper = mapper;
     }
 
     /// <summary>
@@ -25,6 +28,7 @@ public class GetReturnVehicleByIdQueryHandler : IRequestHandler<GetReturnVehicle
     /// </summary>
     public async Task<Result<ReturnVehicleDto>> Handle(GetReturnVehicleByIdQuery request, CancellationToken cancellationToken)
     {
-        return await _service.GetByIdAsync(request.Id, cancellationToken);
+        var result = await _service.GetByIdAsync(request.Id, cancellationToken);
+        return result.MapResult(value => _mapper.Map<ReturnVehicleDto>(value));
     }
 }

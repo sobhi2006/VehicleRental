@@ -1,7 +1,4 @@
 using CarRental.Application.Common;
-using CarRental.Application.DTOs.Payment;
-using CarRental.Application.Features.Payments.Commands.CreatePayment;
-using CarRental.Application.Features.Payments.Commands.UpdatePayment;
 using CarRental.Application.Interfaces;
 using CarRental.Domain.Entities;
 using CarRental.Domain.Interfaces;
@@ -28,33 +25,24 @@ public class PaymentService : IPaymentService
     /// <summary>
     /// Creates a new Payment.
     /// </summary>
-    public async Task<Result<PaymentDto>> CreateAsync(CreatePaymentCommand request, CancellationToken cancellationToken)
+    public async Task<Result<Payment>> CreateAsync(Payment request, CancellationToken cancellationToken)
     {
-        var entity = new Payment
-        {
-            BookingId = request.BookingId,
-            CurrencyId = request.CurrencyId,
-            Amount = request.Amount,
-            Type = request.Type,
-            Status = request.Status,
-        };
-
-        await _repository.AddAsync(entity, cancellationToken);
+        await _repository.AddAsync(request, cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return MapToDto(entity);
+        return request;
     }
 
     /// <summary>
     /// Updates an existing Payment.
     /// </summary>
-    public async Task<Result<PaymentDto>> UpdateAsync(UpdatePaymentCommand request, CancellationToken cancellationToken)
+    public async Task<Result<Payment>> UpdateAsync(Payment request, CancellationToken cancellationToken)
     {
         var entity = await _repository.GetByIdAsync(request.Id, cancellationToken);
 
         if (entity is null)
         {
-            return Result<PaymentDto>.Failure("Payment not found.");
+            return Result<Payment>.Failure("Payment not found.");
         }
 
         entity.BookingId = request.BookingId;
@@ -66,7 +54,7 @@ public class PaymentService : IPaymentService
         await _repository.UpdateAsync(entity, cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return MapToDto(entity);
+        return entity;
     }
 
     /// <summary>
@@ -90,60 +78,37 @@ public class PaymentService : IPaymentService
     /// <summary>
     /// Gets a Payment by id.
     /// </summary>
-    public async Task<Result<PaymentDto>> GetByIdAsync(long id, CancellationToken cancellationToken)
+    public async Task<Result<Payment>> GetByIdAsync(long id, CancellationToken cancellationToken)
     {
         var entity = await _repository.GetByIdAsync(id, cancellationToken);
 
         if (entity is null)
         {
-            return Result<PaymentDto>.Failure("Payment not found.");
+            return Result<Payment>.Failure("Payment not found.");
         }
 
-        return MapToDto(entity);
+        return entity;
     }
 
     /// <summary>
     /// Gets all Payments with pagination.
     /// </summary>
-    public async Task<Result<PaginatedList<PaymentDto>>> GetAllAsync(int pageNumber, int pageSize, CancellationToken cancellationToken)
+    public async Task<Result<PaginatedList<Payment>>> GetAllAsync(int pageNumber, int pageSize, CancellationToken cancellationToken)
     {
         if (pageNumber <= 0)
         {
-            return Result<PaginatedList<PaymentDto>>.Failure("PageNumber must be greater than 0.");
+            return Result<PaginatedList<Payment>>.Failure("PageNumber must be greater than 0.");
         }
 
         if (pageSize <= 0)
         {
-            return Result<PaginatedList<PaymentDto>>.Failure("PageSize must be greater than 0.");
+            return Result<PaginatedList<Payment>>.Failure("PageSize must be greater than 0.");
         }
 
         var totalCount = await _repository.CountAsync(cancellationToken);
-        var entities = await _repository.GetPagedAsync(pageNumber, pageSize, cancellationToken);
+        var items = await _repository.GetPagedAsync(pageNumber, pageSize, cancellationToken);
+        var paginated = new PaginatedList<Payment>(items, totalCount, pageNumber, pageSize);
 
-        var items = entities
-            .Select(MapToDto)
-            .ToList();
-
-        var paginated = new PaginatedList<PaymentDto>(items, totalCount, pageNumber, pageSize);
-
-        return Result<PaginatedList<PaymentDto>>.Success(paginated);
-    }
-
-    /// <summary>
-    /// Maps a domain entity to a DTO.
-    /// </summary>
-    private static PaymentDto MapToDto(Payment entity)
-    {
-        return new PaymentDto
-        {
-            Id = entity.Id,
-            BookingId = entity.BookingId,
-            CurrencyId = entity.CurrencyId,
-            Amount = entity.Amount,
-            Type = entity.Type,
-            Status = entity.Status,
-            CreatedAt = entity.CreatedAt,
-            UpdatedAt = entity.UpdatedAt
-        };
+        return Result<PaginatedList<Payment>>.Success(paginated);
     }
 }
