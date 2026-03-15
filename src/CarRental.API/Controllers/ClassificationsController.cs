@@ -71,7 +71,7 @@ public class ClassificationsController : BaseApiController
     /// <summary>
     /// Update an existing Classification
     /// </summary>
-    [HttpPut("{id:long}")]
+    [HttpPut]
     [ProducesResponseType(typeof(ClassificationDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]

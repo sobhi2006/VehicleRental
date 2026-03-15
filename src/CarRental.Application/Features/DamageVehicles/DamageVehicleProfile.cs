@@ -14,8 +14,10 @@ public class DamageVehicleProfile : Profile
 {
     public DamageVehicleProfile()
     {
-        CreateMap<CreateDamageVehicleCommand, DamageVehicle>();
-        CreateMap<UpdateDamageVehicleCommand, DamageVehicle>();
+        CreateMap<CreateDamageVehicleCommand, DamageVehicle>()
+            .ForMember(dest => dest.Images, opt => opt.Ignore());
+        CreateMap<UpdateDamageVehicleCommand, DamageVehicle>()
+            .ForMember(dest => dest.Images, opt => opt.Ignore());
         CreateMap<DamageVehicle, DamageVehicleDto>()
             .ForMember(dest => dest.Images, opt => opt.MapFrom(src => src.Images.Select(i => new ImageDto {Id = i.Id, ImageUrl = i.Url }).ToList()));
     }

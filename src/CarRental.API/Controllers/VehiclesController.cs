@@ -72,7 +72,7 @@ public class VehiclesController : BaseApiController
     /// <summary>
     /// Update an existing Vehicle
     /// </summary>
-    [HttpPut("{id:long}")]
+    [HttpPut]
     [ProducesResponseType(typeof(VehicleDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]

@@ -71,7 +71,7 @@ public class DriversController : BaseApiController
     /// <summary>
     /// Update an existing Driver
     /// </summary>
-    [HttpPut("{id:long}")]
+    [HttpPut]
     [ProducesResponseType(typeof(DriverDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]

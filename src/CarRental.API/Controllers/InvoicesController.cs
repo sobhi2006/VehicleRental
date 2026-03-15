@@ -71,7 +71,7 @@ public class InvoicesController : BaseApiController
     /// <summary>
     /// Update an existing Invoice
     /// </summary>
-    [HttpPut("{id:long}")]
+    [HttpPut]
     [ProducesResponseType(typeof(InvoiceDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]

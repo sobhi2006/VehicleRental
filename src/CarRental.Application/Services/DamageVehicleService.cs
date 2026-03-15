@@ -2,6 +2,7 @@ using CarRental.Application.Common;
 using CarRental.Application.Features.DamageVehicles.Commands.CreateDamageVehicle;
 using CarRental.Application.Features.DamageVehicles.Commands.UpdateDamageVehicle;
 using CarRental.Application.Interfaces;
+using CarRental.Domain.Entities.ImageEntities;
 using CarRental.Domain.Entities.Vehicles;
 using CarRental.Domain.Interfaces;
 
@@ -14,14 +15,16 @@ public class DamageVehicleService : IDamageVehicleService
 {
     private readonly IDamageVehicleRepository _repository;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IImageService _imageService;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="DamageVehicleService"/> class.
     /// </summary>
-    public DamageVehicleService(IDamageVehicleRepository repository, IUnitOfWork unitOfWork)
+    public DamageVehicleService(IDamageVehicleRepository repository, IUnitOfWork unitOfWork, IImageService imageService)
     {
         _repository = repository;
         _unitOfWork = unitOfWork;
+        _imageService = imageService;
     }
 
     /// <summary>
@@ -38,7 +41,7 @@ public class DamageVehicleService : IDamageVehicleService
     /// <summary>
     /// Updates an existing DamageVehicle.
     /// </summary>
-    public async Task<Result<DamageVehicle>> UpdateAsync(DamageVehicle request, CancellationToken cancellationToken)
+    public async Task<Result<DamageVehicle>> UpdateAsync(DamageVehicle request, List<DamageVehicleImage> uploadedImages, List<long> imageIDsToRemove, CancellationToken cancellationToken)
     {
         var entity = await _repository.GetByIdAsync(request.Id, cancellationToken);
 
@@ -47,16 +50,25 @@ public class DamageVehicleService : IDamageVehicleService
             return Result<DamageVehicle>.Failure("DamageVehicle not found.");
         }
 
+        var imagesUrlToRemove = entity.Images
+            .Where(img => imageIDsToRemove.Contains(img.Id))
+            .Select(img => img.Url)
+            .ToList();
+
+        // Keep EF tracking state consistent while deleting selected images.
+        imageIDsToRemove.ForEach(id => entity.Images.RemoveAll(img => img.Id == id));
+        entity.Images.AddRange(uploadedImages);
+
         entity.VehicleId = request.VehicleId;
         entity.BookingId = request.BookingId;
         entity.Severity = request.Severity;
         entity.Description = request.Description;
-        entity.Images = request.Images;
         entity.RepairCost = request.RepairCost;
         entity.DamageDate = request.DamageDate;
 
         await _repository.UpdateAsync(entity, cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
+        await _imageService.DeleteImagesAsync(imagesUrlToRemove, cancellationToken);
 
         return entity;
     }

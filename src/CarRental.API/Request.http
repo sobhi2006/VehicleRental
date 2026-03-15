@@ -77,7 +77,7 @@ Content-Type: application/json
 }
 
 ### Drivers - Update
-PUT {{BaseUrl}}/api/v{{ApiVersion}}/Drivers/{{Id}}
+PUT {{BaseUrl}}/api/v{{ApiVersion}}/Drivers
 Content-Type: application/json
 
 {
@@ -109,7 +109,7 @@ Content-Type: application/json
 }
 
 ### Makes - Update
-PUT {{BaseUrl}}/api/v{{ApiVersion}}/Makes/{{Id}}
+PUT {{BaseUrl}}/api/v{{ApiVersion}}/Makes
 Content-Type: application/json
 
 {
@@ -142,7 +142,7 @@ Content-Type: application/json
 }
 
 ### Classifications - Update
-PUT {{BaseUrl}}/api/v{{ApiVersion}}/Classifications/{{Id}}
+PUT {{BaseUrl}}/api/v{{ApiVersion}}/Classifications
 Content-Type: application/json
 
 {
@@ -177,7 +177,7 @@ Content-Type: application/json
 }
 
 ### BlockListCustomers - Update
-PUT {{BaseUrl}}/api/v{{ApiVersion}}/BlockListCustomers/{{Id}}
+PUT {{BaseUrl}}/api/v{{ApiVersion}}/BlockListCustomers
 Content-Type: application/json
 
 {
@@ -207,7 +207,7 @@ Content-Type: application/json
 }
 
 ### FeesBanks - Update
-PUT {{BaseUrl}}/api/v{{ApiVersion}}/FeesBanks/{{Id}}
+PUT {{BaseUrl}}/api/v{{ApiVersion}}/FeesBanks
 Content-Type: application/json
 
 {
@@ -239,7 +239,7 @@ Content-Type: application/json
 }
 
 ### Currencies - Update
-PUT {{BaseUrl}}/api/v{{ApiVersion}}/Currencies/{{Id}}
+PUT {{BaseUrl}}/api/v{{ApiVersion}}/Currencies
 Content-Type: application/json
 
 {
@@ -280,7 +280,7 @@ Content-Type: application/json
 }
 
 ### Vehicles - Update
-PUT {{BaseUrl}}/api/v{{ApiVersion}}/Vehicles/{{Id}}
+PUT {{BaseUrl}}/api/v{{ApiVersion}}/Vehicles
 Content-Type: application/json
 
 {
@@ -325,7 +325,7 @@ Content-Type: application/json
 }
 
 ### MaintenanceVehicles - Update
-PUT {{BaseUrl}}/api/v{{ApiVersion}}/MaintenanceVehicles/{{Id}}
+PUT {{BaseUrl}}/api/v{{ApiVersion}}/MaintenanceVehicles
 Content-Type: application/json
 
 {
@@ -396,8 +396,8 @@ POST {{BaseUrl}}/api/v{{ApiVersion}}/DamageVehicles
 Content-Type: application/json
 
 {
-	"vehicleId": 1,
-	"bookingId": 1,
+	"vehicleId": 22,
+	"bookingId": 2,
 	"severity": 0,
 	"description": "Scratch on front bumper",
 	"images": [],
@@ -406,7 +406,7 @@ Content-Type: application/json
 }
 
 ### DamageVehicles - Update
-PUT {{BaseUrl}}/api/v{{ApiVersion}}/DamageVehicles/{{Id}}
+PUT {{BaseUrl}}/api/v{{ApiVersion}}/DamageVehicles
 Content-Type: application/json
 
 {
@@ -446,7 +446,7 @@ Content-Type: application/json
 }
 
 ### Payments - Update
-PUT {{BaseUrl}}/api/v{{ApiVersion}}/Payments/{{Id}}
+PUT {{BaseUrl}}/api/v{{ApiVersion}}/Payments
 Content-Type: application/json
 
 {
@@ -485,7 +485,7 @@ Content-Type: application/json
 }
 
 ### Invoices - Update
-PUT {{BaseUrl}}/api/v{{ApiVersion}}/Invoices/{{Id}}
+PUT {{BaseUrl}}/api/v{{ApiVersion}}/Invoices
 Content-Type: application/json
 
 {
@@ -525,7 +525,7 @@ Content-Type: application/json
 }
 
 ### ReturnVehicles - Update
-PUT {{BaseUrl}}/api/v{{ApiVersion}}/ReturnVehicles/{{Id}}
+PUT {{BaseUrl}}/api/v{{ApiVersion}}/ReturnVehicles
 Content-Type: application/json
 
 {

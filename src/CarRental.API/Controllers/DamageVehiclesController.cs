@@ -53,9 +53,10 @@ public class DamageVehiclesController : BaseApiController
     /// Create a new DamageVehicle
     /// </summary>
     [HttpPost]
+    [Consumes("multipart/form-data")]
     [ProducesResponseType(typeof(DamageVehicleDto), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> Create([FromBody] CreateDamageVehicleCommand command, CancellationToken cancellationToken)
+    public async Task<IActionResult> Create([FromForm] CreateDamageVehicleCommand command, CancellationToken cancellationToken)
     {
         var result = await Mediator.Send(command, cancellationToken);
         
@@ -71,11 +72,12 @@ public class DamageVehiclesController : BaseApiController
     /// <summary>
     /// Update an existing DamageVehicle
     /// </summary>
-    [HttpPut("{id:long}")]
+    [HttpPut]
+    [Consumes("multipart/form-data")]
     [ProducesResponseType(typeof(DamageVehicleDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> Update([FromBody] UpdateDamageVehicleCommand command, CancellationToken cancellationToken)
+    public async Task<IActionResult> Update([FromForm] UpdateDamageVehicleCommand command, CancellationToken cancellationToken)
     {
         var result = await Mediator.Send(command, cancellationToken);
         

@@ -70,7 +70,7 @@ public class BlockListCustomersController : BaseApiController
     /// <summary>
     /// Update an existing BlockListCustomer
     /// </summary>
-    [HttpPut("{id:long}")]
+    [HttpPut]
     [ProducesResponseType(typeof(BlockListCustomerDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]

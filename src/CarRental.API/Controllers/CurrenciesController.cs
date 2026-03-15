@@ -71,7 +71,7 @@ public class CurrenciesController : BaseApiController
     /// <summary>
     /// Update an existing Currency
     /// </summary>
-    [HttpPut("{id:long}")]
+    [HttpPut]
     [ProducesResponseType(typeof(CurrencyDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]

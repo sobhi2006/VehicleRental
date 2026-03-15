@@ -27,4 +27,5 @@ public record UpdateDamageVehicleCommand : IRequest<Result<DamageVehicleDto>>
     public decimal RepairCost { get; init; }
     /// <summary>Gets or sets the DamageDate.</summary>
     public DateTime DamageDate { get; init; }
+    public List<long> ImageIDsToRemove { get; set; } = [];
 }

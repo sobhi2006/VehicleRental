@@ -71,7 +71,7 @@ public class PaymentsController : BaseApiController
     /// <summary>
     /// Update an existing Payment
     /// </summary>
-    [HttpPut("{id:long}")]
+    [HttpPut]
     [ProducesResponseType(typeof(PaymentDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]

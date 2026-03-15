@@ -1,6 +1,7 @@
 using CarRental.Application.Common;
 using CarRental.Application.Features.DamageVehicles.Commands.CreateDamageVehicle;
 using CarRental.Application.Features.DamageVehicles.Commands.UpdateDamageVehicle;
+using CarRental.Domain.Entities.ImageEntities;
 using CarRental.Domain.Entities.Vehicles;
 
 namespace CarRental.Application.Interfaces;
@@ -17,7 +18,7 @@ public interface IDamageVehicleService
     /// <summary>
     /// Updates an existing DamageVehicle.
     /// </summary>
-    Task<Result<DamageVehicle>> UpdateAsync(DamageVehicle request, CancellationToken cancellationToken);
+    Task<Result<DamageVehicle>> UpdateAsync(DamageVehicle request, List<DamageVehicleImage> uploadedImages, List<long> imageIDsToRemove, CancellationToken cancellationToken);
     /// <summary>
     /// Deletes an existing DamageVehicle.
     /// </summary>

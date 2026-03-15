@@ -71,7 +71,7 @@ public class FeesBanksController : BaseApiController
     /// <summary>
     /// Update an existing FeesBank
     /// </summary>
-    [HttpPut("{id:long}")]
+    [HttpPut]
     [ProducesResponseType(typeof(FeesBankDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]

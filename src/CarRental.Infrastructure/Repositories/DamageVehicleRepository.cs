@@ -18,6 +18,22 @@ public class DamageVehicleRepository : BaseRepository<DamageVehicle>, IDamageVeh
     {
     }
 
+    public override async Task<DamageVehicle?> GetByIdAsync(long id, CancellationToken cancellationToken = default)
+    {
+        return await _dbSet
+            .Include(e => e.Images)
+            .FirstOrDefaultAsync(e => e.Id == id, cancellationToken);
+    }
+
+    public override async Task<IReadOnlyList<DamageVehicle>> GetPagedAsync(int pageNumber, int pageSize, CancellationToken cancellationToken = default)
+    {
+        return await _dbSet
+            .Include(e => e.Images)
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync(cancellationToken);
+    }
+
     // public override async Task<DamageVehicle?> GetByIdAsync(long id, CancellationToken cancellationToken = default)
     // {
     //     return await _dbSet
