@@ -36,6 +36,6 @@ public interface IDriverService
     Task<bool> ExistsByPersonIdExcludeSelfAsync(UpdateDriverCommand request, CancellationToken cancellationToken);
     Task<bool> ExistsByDriverLicenseNumberAsync(string driverLicenseNumber, CancellationToken cancellationToken);
     Task<bool> ExistsByDriverLicenseNumberExcludeSelfAsync(UpdateDriverCommand request, CancellationToken cancellationToken);
-    Task<bool> IsDriverLicenseValidAsync(long driverId, CancellationToken cancellationToken);
+    Task<bool> IsDriverLicenseValidAfterEndBookingAsync(long driverId, DateTime EndAt, CancellationToken cancellationToken);
     Task<bool> ExistsByIdAsync(long driverId, CancellationToken cancellation);
 }

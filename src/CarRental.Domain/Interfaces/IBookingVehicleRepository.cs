@@ -8,5 +8,6 @@ namespace CarRental.Domain.Interfaces;
 /// </summary>
 public interface IBookingVehicleRepository : IRepository<BookingVehicle>
 {
-    Task<bool> IsVehicleAvailableForBookingAsync(long vehicleId, DateTime pickUpDate, DateTime dropOffDate, CancellationToken cancellationToken);
+    Task<bool> IsBookingVehicleExistAsync(long id, CancellationToken ct);
+    Task<bool> IsVehicleAvailableForBookingAsync(long vehicleId, DateTime pickUpDate, DateTime dropOffDate, CancellationToken cancellationToken, long? excludeBookingVehicleId = null);
 }

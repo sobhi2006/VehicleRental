@@ -1,5 +1,6 @@
 using System.Data;
 using CarRental.Application.Interfaces;
+using CarRental.Domain.Enums;
 using FluentValidation;
 
 namespace CarRental.Application.Features.MaintenanceVehicles.Commands.CreateMaintenanceVehicle;
@@ -10,13 +11,15 @@ namespace CarRental.Application.Features.MaintenanceVehicles.Commands.CreateMain
 public class CreateMaintenanceVehicleCommandValidator : AbstractValidator<CreateMaintenanceVehicleCommand>
 {
     private readonly IVehicleService _vehicleService;
+    private readonly IMaintenanceVehicleService _maintenanceVehicleService;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="CreateMaintenanceVehicleCommandValidator"/> class.
     /// </summary>
-    public CreateMaintenanceVehicleCommandValidator(IVehicleService vehicleService)
+    public CreateMaintenanceVehicleCommandValidator(IVehicleService vehicleService, IMaintenanceVehicleService maintenanceVehicleService)
     {
         _vehicleService = vehicleService;
+        _maintenanceVehicleService = maintenanceVehicleService;
         ApplyValidation();
         ApplyCustomValidations();
     }
@@ -30,6 +33,21 @@ public class CreateMaintenanceVehicleCommandValidator : AbstractValidator<Create
                 return vehicleExists;
             })
             .WithMessage("Vehicle not found.");
+        
+        RuleFor(x => x)
+            .MustAsync(async (request, cancellationToken) =>
+            {
+                var isUnderMaintenance = await _maintenanceVehicleService.IsUnderMaintenanceAsync(
+                                                                request.VehicleId, 
+                                                                  request.StartDate, 
+                                                                    request.EndDate, 
+                                                                           cancellationToken);
+                return !isUnderMaintenance;
+            })
+            .WithMessage("Vehicle is currently under maintenance.");
+            
+        RuleFor(x => x.Status)
+            .IsInEnum().WithMessage("Invalid status value.");
     }
 
     private void ApplyValidation()

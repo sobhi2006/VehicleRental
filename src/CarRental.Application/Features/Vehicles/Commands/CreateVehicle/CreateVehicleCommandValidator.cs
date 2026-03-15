@@ -46,6 +46,15 @@ public class CreateVehicleCommandValidator : AbstractValidator<CreateVehicleComm
 
         RuleFor(x => x.DoorsNumber)
             .GreaterThanOrEqualTo(0).WithMessage("DoorsNumber must be greater than or equal to 0.");
+
+        RuleFor(x => x.Status)
+            .IsInEnum().WithMessage("Invalid status value.");
+
+        RuleFor(x => x.FuelType)
+            .IsInEnum().WithMessage("Invalid fuel type value.");
+
+        RuleFor(x => x.Transmission)
+            .IsInEnum().WithMessage("Invalid transmission value.");
     }
 
     private void ApplyCustomValidations()

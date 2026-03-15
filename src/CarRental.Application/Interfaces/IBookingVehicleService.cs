@@ -30,5 +30,6 @@ public interface IBookingVehicleService
     /// Gets all BookingVehicles with pagination.
     /// </summary>
     Task<Result<PaginatedList<BookingVehicle>>> GetAllAsync(int pageNumber, int pageSize, CancellationToken cancellationToken);
-    Task<bool> IsVehicleAvailableForBookingAsync(long vehicleId, DateTime pickUpDate, DateTime dropOffDate, CancellationToken cancellationToken);
+    Task<bool> IsVehicleAvailableForBookingAsync(long vehicleId, DateTime pickUpDate, DateTime dropOffDate, CancellationToken cancellationToken, long? excludeBookingVehicleId = null);
+    Task<bool> IsBookingVehicleExistAsync(long id, CancellationToken ct);
 }

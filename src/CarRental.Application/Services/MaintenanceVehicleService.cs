@@ -125,4 +125,9 @@ public class MaintenanceVehicleService : IMaintenanceVehicleService
 
         return Result<PaginatedList<MaintenanceVehicle>>.Success(paginated);
     }
+
+    public async Task<bool> IsUnderMaintenanceAsync(long vehicleId, DateTime StartAt, DateTime EndAt, CancellationToken cancellationToken)
+    {
+        return await _repository.IsUnderMaintenance(vehicleId, StartAt, EndAt, cancellationToken);
+    }
 }

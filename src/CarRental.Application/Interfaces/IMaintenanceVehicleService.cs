@@ -1,4 +1,5 @@
 using CarRental.Application.Common;
+using CarRental.Application.Features.MaintenanceVehicles.Commands.CreateMaintenanceVehicle;
 using CarRental.Domain.Entities.Vehicles;
 
 namespace CarRental.Application.Interfaces;
@@ -28,4 +29,5 @@ public interface IMaintenanceVehicleService
     /// Gets all MaintenanceVehicles with pagination.
     /// </summary>
     Task<Result<PaginatedList<MaintenanceVehicle>>> GetAllAsync(int pageNumber, int pageSize, CancellationToken cancellationToken);
+    Task<bool> IsUnderMaintenanceAsync(long vehicleId, DateTime StartAt, DateTime EndAt, CancellationToken cancellationToken);
 }

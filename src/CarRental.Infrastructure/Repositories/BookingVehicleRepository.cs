@@ -18,19 +18,30 @@ public class BookingVehicleRepository : BaseRepository<BookingVehicle>, IBooking
     public BookingVehicleRepository(ApplicationDbContext context) : base(context)
     {
     }
+
+    public async Task<bool> IsBookingVehicleExistAsync(long id, CancellationToken ct)
+    {
+        return await _dbSet.AnyAsync(bv => bv.Id == id 
+                                                     && (
+                                                            bv.Status != StatusBooking.Completed 
+                                                            && 
+                                                            bv.Status != StatusBooking.Cancelled
+                                                        ), ct);
+    }
+
     /// <summary>
     /// Checks if a vehicle is available for booking within the specified date range.
     /// </summary>
-    public async Task<bool> IsVehicleAvailableForBookingAsync(long vehicleId, DateTime pickUpDate, DateTime dropOffDate, CancellationToken cancellationToken)
+    public async Task<bool> IsVehicleAvailableForBookingAsync(long vehicleId, DateTime pickUpDate, DateTime dropOffDate, CancellationToken cancellationToken, long? excludeBookingVehicleId = null)
     {
         var result = await _dbSet
-            .AnyAsync(bv => bv.VehicleId == vehicleId &&
-                         bv.Status != StatusBooking.Cancelled 
-                         && (
-                                (pickUpDate >= bv.PickUpDate && pickUpDate < bv.DropOffDate) 
-                                ||
-                                (dropOffDate > bv.PickUpDate && dropOffDate <= bv.DropOffDate)
-                            ), cancellationToken);
+            .AnyAsync(bv =>bv.VehicleId == vehicleId &&
+                                                    (!excludeBookingVehicleId.HasValue || bv.Id != excludeBookingVehicleId.Value) &&
+                                                    bv.PickUpDate < dropOffDate &&
+                                                    bv.DropOffDate > pickUpDate &&
+                                                    bv.Status != StatusBooking.Cancelled &&  
+                                                    bv.Status != StatusBooking.Completed
+                                                    , cancellationToken);
         return !result;
     }
 

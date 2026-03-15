@@ -118,8 +118,13 @@ public class BookingVehicleService : IBookingVehicleService
     /// <summary>
     /// Checks if a vehicle is available for booking within the specified date range.
     /// </summary>
-    public Task<bool> IsVehicleAvailableForBookingAsync(long vehicleId, DateTime pickUpDate, DateTime dropOffDate, CancellationToken cancellationToken)
+    public Task<bool> IsVehicleAvailableForBookingAsync(long vehicleId, DateTime pickUpDate, DateTime dropOffDate, CancellationToken cancellationToken, long? excludeBookingVehicleId = null)
     {
-        return _repository.IsVehicleAvailableForBookingAsync(vehicleId, pickUpDate, dropOffDate, cancellationToken);
+        return _repository.IsVehicleAvailableForBookingAsync(vehicleId, pickUpDate, dropOffDate, cancellationToken, excludeBookingVehicleId);
+    }
+
+    public async Task<bool> IsBookingVehicleExistAsync(long id, CancellationToken ct)
+    {
+        return await _repository.IsBookingVehicleExistAsync(id, ct);
     }
 }

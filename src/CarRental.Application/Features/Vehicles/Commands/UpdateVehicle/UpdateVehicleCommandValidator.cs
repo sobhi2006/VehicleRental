@@ -52,6 +52,15 @@ public class UpdateVehicleCommandValidator : AbstractValidator<UpdateVehicleComm
 
         RuleFor(x => x.ImageIDsToRemove)
             .ForEach(l => l.GreaterThan(0)).WithMessage("All ImageIDsToRemove must be greater than 0.");
+        
+        RuleFor(x => x.Status)
+            .IsInEnum().WithMessage("Invalid status value.");
+
+        RuleFor(x => x.FuelType)
+            .IsInEnum().WithMessage("Invalid fuel type value.");
+
+        RuleFor(x => x.Transmission)
+            .IsInEnum().WithMessage("Invalid transmission value.");
     }
 
     private void ApplyCustomValidations()

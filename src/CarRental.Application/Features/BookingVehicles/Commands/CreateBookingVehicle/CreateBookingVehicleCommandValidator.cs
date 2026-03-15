@@ -42,6 +42,12 @@ public class CreateBookingVehicleCommandValidator : AbstractValidator<CreateBook
             .NotEmpty().WithMessage("PickUpDate is required.")
             .Must(date => date > DateTime.UtcNow).WithMessage("PickUpDate must be in the future.")
             .LessThan(bv => bv.DropOffDate).WithMessage("PickUpDate must be before DropOffDate.");
+
+        RuleFor(x => x.Status)
+            .IsInEnum().WithMessage("Status must be a valid enum value.");
+
+        RuleFor(x => x.Notes)
+            .MaximumLength(500).WithMessage("Notes cannot exceed 500 characters.");
     }
 
     private void ApplyCustomValidations()
@@ -49,7 +55,7 @@ public class CreateBookingVehicleCommandValidator : AbstractValidator<CreateBook
         RuleFor(b => b)
             .MustAsync(async (request, ct) =>
             {
-                return await _driverService.IsDriverLicenseValidAsync(request.DriverId, ct);
+                return await _driverService.IsDriverLicenseValidAfterEndBookingAsync(request.DriverId, request.DropOffDate, ct);
             }).WithMessage("The driver does not have a valid license.")
             .MustAsync(async (request, ct) =>
             {

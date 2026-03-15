@@ -42,20 +42,22 @@ public class VehicleRepository : BaseRepository<Vehicle>, IVehicleRepository
                 mv.EndDate > pickUpDate,
             cancellationToken);
 
-        if (hasMaintenanceConflict)
-        {
-            return false;
-        }
+        return !hasMaintenanceConflict;
 
-        var hasBookingConflict = await _context.Set<BookingVehicle>().AnyAsync(
-            bv =>
-                bv.VehicleId == vehicleId &&
-                bv.PickUpDate < dropOffDate &&
-                bv.DropOffDate > pickUpDate &&
-                (bv.Status == StatusBooking.Cancelled || bv.Status == StatusBooking.Completed),
-            cancellationToken);
+        // if (hasMaintenanceConflict)
+        // {
+        //     return false;
+        // }
 
-        return !hasBookingConflict;
+        // var hasBookingConflict = await _context.Set<BookingVehicle>().AnyAsync(
+        //     bv =>
+        //         bv.VehicleId == vehicleId &&
+        //         bv.PickUpDate < dropOffDate &&
+        //         bv.DropOffDate > pickUpDate &&
+        //         bv.Status != StatusBooking.Cancelled && bv.Status != StatusBooking.Completed,
+        //     cancellationToken);
+
+        // return !hasBookingConflict;
     }
 
     public override async Task<Vehicle?> GetByIdAsync(long id, CancellationToken cancellationToken = default)

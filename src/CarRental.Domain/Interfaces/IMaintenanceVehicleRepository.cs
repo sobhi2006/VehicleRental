@@ -8,4 +8,5 @@ namespace CarRental.Domain.Interfaces;
 /// </summary>
 public interface IMaintenanceVehicleRepository : IRepository<MaintenanceVehicle>
 {
+    Task<bool> IsUnderMaintenance(long vehicleId, DateTime StartAt, DateTime EndAt, CancellationToken cancellationToken);
 }

@@ -1,3 +1,4 @@
+using System.Data;
 using CarRental.Application.Interfaces;
 using FluentValidation;
 
@@ -44,6 +45,12 @@ public class UpdateBookingVehicleCommandValidator : AbstractValidator<UpdateBook
             .NotEmpty().WithMessage("PickUpDate is required.")
             .Must(date => date > DateTime.UtcNow).WithMessage("PickUpDate must be in the future.")
             .LessThan(bv => bv.DropOffDate).WithMessage("PickUpDate must be before DropOffDate.");
+
+        RuleFor(x => x.Status)
+            .IsInEnum().WithMessage("Status must be a valid enum value.");
+
+        RuleFor(x => x.Notes)
+            .MaximumLength(500).WithMessage("Notes cannot exceed 500 characters.");
     }
 
     private void ApplyCustomValidations()
@@ -51,8 +58,12 @@ public class UpdateBookingVehicleCommandValidator : AbstractValidator<UpdateBook
         RuleFor(b => b)
             .MustAsync(async (request, ct) =>
             {
-                return await _driverService.IsDriverLicenseValidAsync(request.DriverId, ct);
-            }).WithMessage("The driver does not have a valid license.")
+                return await _bookingVehicleService.IsBookingVehicleExistAsync(request.Id, ct);
+            }).WithMessage("The booking vehicle does not exist.")
+            .MustAsync(async (request, ct) =>
+            {
+                return await _driverService.IsDriverLicenseValidAfterEndBookingAsync(request.DriverId, request.DropOffDate, ct);
+            }).WithMessage("The driver does not have a valid license or he is not found.")
             .MustAsync(async (request, ct) =>
             {
                 var vehicleAvailable = await _vehicleService.IsVehicleAvailableAsync(request.VehicleId, request.PickUpDate, request.DropOffDate, ct);
@@ -60,7 +71,7 @@ public class UpdateBookingVehicleCommandValidator : AbstractValidator<UpdateBook
             }).WithMessage("The vehicle is not available.")
             .MustAsync(async (request, ct) =>
             {
-                var vehicleBookingAvailable = await _bookingVehicleService.IsVehicleAvailableForBookingAsync(request.VehicleId, request.PickUpDate, request.DropOffDate, ct);
+                var vehicleBookingAvailable = await _bookingVehicleService.IsVehicleAvailableForBookingAsync(request.VehicleId, request.PickUpDate, request.DropOffDate, ct, request.Id);
                 return vehicleBookingAvailable;
             }).WithMessage("The vehicle is already booked for the selected dates.");
     }

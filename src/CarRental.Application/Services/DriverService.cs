@@ -156,9 +156,9 @@ public class DriverService : IDriverService
     /// <summary>
     /// Checks if a Driver has a valid license.
     /// </summary>
-    public Task<bool> IsDriverLicenseValidAsync(long driverId, CancellationToken cancellationToken)
+    public Task<bool> IsDriverLicenseValidAfterEndBookingAsync(long driverId, DateTime EndAt, CancellationToken cancellationToken)
     {
-        return _repository.ExistsAsync(d => d.Id == driverId && d.DriverLicenseExpiryDate > DateOnly.FromDateTime(DateTime.UtcNow), cancellationToken);
+        return _repository.ExistsAsync(d => d.Id == driverId && d.DriverLicenseExpiryDate > DateOnly.FromDateTime(EndAt), cancellationToken);
     }
     /// <summary>
     /// Checks if a Driver exists by id.

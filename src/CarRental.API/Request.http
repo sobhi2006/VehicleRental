@@ -316,12 +316,12 @@ POST {{BaseUrl}}/api/v{{ApiVersion}}/MaintenanceVehicles
 Content-Type: application/json
 
 {
-	"vehicleId": 1,
+	"vehicleId": 22,
 	"cost": 80.00,
 	"startDate": "2026-03-06T08:00:00Z",
 	"endDate": "2026-03-06T12:00:00Z",
 	"notes": "Oil change",
-	"status": 0
+	"status": 2
 }
 
 ### MaintenanceVehicles - Update
@@ -356,12 +356,12 @@ POST {{BaseUrl}}/api/v{{ApiVersion}}/BookingVehicles
 Content-Type: application/json
 
 {
-	"driverId": 1,
-	"vehicleId": 1,
-	"status": 0,
+	"driverId": 10,
+	"vehicleId": 22,
+	"status": 1,
 	"notes": "Weekend booking",
-	"pickUpDate": "2026-03-13T15:00:00Z",
-	"dropOffDate": "2026-03-14T18:00:00Z"
+	"pickUpDate": "2026-03-16T18:00:00Z",
+	"dropOffDate": "2026-04-17T18:00:00Z"
 }
 
 ### BookingVehicles - Update
@@ -370,12 +370,12 @@ Content-Type: application/json
 
 {
 	"id": 1,
-	"driverId": 1,
-	"vehicleId": 1,
-	"status": 1,
+	"driverId": 10,
+	"vehicleId": 22,
+	"status": 2,
 	"notes": "Extended one more day",
-	"pickUpDate": "2026-03-10T09:00:00Z",
-	"dropOffDate": "2026-03-13T18:00:00Z"
+	"pickUpDate": "2026-03-17T09:00:00Z",
+	"dropOffDate": "2026-03-18T18:00:00Z"
 }
 
 ### BookingVehicles - Delete
