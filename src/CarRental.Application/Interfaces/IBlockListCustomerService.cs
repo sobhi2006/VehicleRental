@@ -1,4 +1,5 @@
 using CarRental.Application.Common;
+using CarRental.Application.Features.BookingVehicles.Commands.CreateBookingVehicle;
 using CarRental.Domain.Entities;
 
 namespace CarRental.Application.Interfaces;
@@ -28,4 +29,5 @@ public interface IBlockListCustomerService
     /// Gets all BlockListCustomers with pagination.
     /// </summary>
     Task<Result<PaginatedList<BlockListCustomer>>> GetAllAsync(int pageNumber, int pageSize, CancellationToken cancellationToken);
+    Task<bool> IsDriverBlockedById(long driverId, CancellationToken ct);
 }

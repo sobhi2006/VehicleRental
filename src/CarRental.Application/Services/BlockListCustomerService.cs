@@ -105,4 +105,9 @@ public class BlockListCustomerService : IBlockListCustomerService
 
         return Result<PaginatedList<BlockListCustomer>>.Success(paginated);
     }
+
+    public async Task<bool> IsDriverBlockedById(long driverId, CancellationToken ct)
+    {
+        return await _repository.IsDriverBlockedByIdAsync(driverId, ct);
+    }
 }

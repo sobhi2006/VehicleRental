@@ -17,6 +17,11 @@ public class BlockListCustomerRepository : BaseRepository<BlockListCustomer>, IB
     {
     }
 
+    public async Task<bool> IsDriverBlockedByIdAsync(long driverId, CancellationToken ct)
+    {
+        return await _dbSet.AnyAsync(b => b.DriverId == driverId && b.IsBlock, ct);
+    }
+
     // public override async Task<BlockListCustomer?> GetByIdAsync(long id, CancellationToken cancellationToken = default)
     // {
     //     return await _dbSet

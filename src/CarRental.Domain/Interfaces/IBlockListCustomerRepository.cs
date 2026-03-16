@@ -7,4 +7,5 @@ namespace CarRental.Domain.Interfaces;
 /// </summary>
 public interface IBlockListCustomerRepository : IRepository<BlockListCustomer>
 {
+    Task<bool> IsDriverBlockedByIdAsync(long driverId, CancellationToken ct);
 }

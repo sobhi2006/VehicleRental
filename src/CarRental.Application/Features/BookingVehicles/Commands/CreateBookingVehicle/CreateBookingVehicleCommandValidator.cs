@@ -11,16 +11,17 @@ public class CreateBookingVehicleCommandValidator : AbstractValidator<CreateBook
     private readonly IDriverService _driverService;
     private readonly IVehicleService _vehicleService;
     private readonly IBookingVehicleService _bookingVehicleService;
+    private readonly IBlockListCustomerService _blockListCustomerService;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="CreateBookingVehicleCommandValidator"/> class.
     /// </summary>
-    public CreateBookingVehicleCommandValidator(IDriverService driverService, IVehicleService vehicleService, IBookingVehicleService bookingVehicleService)
+    public CreateBookingVehicleCommandValidator(IDriverService driverService, IVehicleService vehicleService, IBookingVehicleService bookingVehicleService, IBlockListCustomerService blockListCustomerService)
     {
         _driverService = driverService;
         _vehicleService = vehicleService;
         _bookingVehicleService = bookingVehicleService;
-
+        _blockListCustomerService = blockListCustomerService;
         ApplyRules();
         ApplyCustomValidations();
         
@@ -67,5 +68,11 @@ public class CreateBookingVehicleCommandValidator : AbstractValidator<CreateBook
                 var vehicleBookingAvailable = await _bookingVehicleService.IsVehicleAvailableForBookingAsync(request.VehicleId, request.PickUpDate, request.DropOffDate, ct);
                 return vehicleBookingAvailable;
             }).WithMessage("The vehicle is already booked for the selected dates.");
+
+        RuleFor(b => b.DriverId)
+            .MustAsync(async (driverId, ct) =>
+            {
+                return !await _blockListCustomerService.IsDriverBlockedById(driverId, ct);
+            }).WithMessage("Driver with the specified ID is blocked.");
     }
 }
