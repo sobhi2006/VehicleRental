@@ -15,8 +15,8 @@ public record ReturnVehicleDto
     public DateTime ActualReturnDate { get; init; }
     /// <summary>Gets or sets the MileageAfter.</summary>
     public decimal MileageAfter { get; init; }
-    /// <summary>Gets or sets the ExcessMileageFess.</summary>
-    public long? ExcessMileageFess { get; init; }
+    /// <summary>Gets or sets the applied FeesBank identifiers.</summary>
+    public List<long> FeesBankIds { get; init; } = [];
     /// <summary>Gets or sets the DamageId.</summary>
     public long? DamageId{ get; init; }
     /// <summary>Gets or sets the creation timestamp.</summary>

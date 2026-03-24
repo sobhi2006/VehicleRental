@@ -17,7 +17,6 @@ public class PersonProfile : Profile
         CreateMap<UpdatePersonCommand, Person>();
         CreateMap<Person, PersonDto>();
 
-        CreateMap<Person, UpdateNationalNoDto>()
-            .ForMember(d => d.NationalNo, opt => opt.Ignore());
+        CreateMap<Person, UpdateNationalNoDto>();
     }
 }

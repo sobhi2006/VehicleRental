@@ -13,8 +13,14 @@ public class ReturnVehicleProfile : Profile
 {
     public ReturnVehicleProfile()
     {
-        CreateMap<CreateReturnVehicleCommand, ReturnVehicle>();
-        CreateMap<UpdateReturnVehicleCommand, ReturnVehicle>();
-        CreateMap<ReturnVehicle, ReturnVehicleDto>();
+        CreateMap<CreateReturnVehicleCommand, ReturnVehicle>()
+            .ForMember(dest => dest.ReturnVehicleFeesBanks, opt => opt.Ignore());
+
+        CreateMap<UpdateReturnVehicleCommand, ReturnVehicle>()
+            .ForMember(dest => dest.ReturnVehicleFeesBanks, opt => opt.Ignore());
+
+        CreateMap<ReturnVehicle, ReturnVehicleDto>()
+            .ForMember(dest => dest.FeesBankIds,
+                opt => opt.MapFrom(src => src.ReturnVehicleFeesBanks.Select(x => x.FeesBankId).ToList()));
     }
 }

@@ -28,4 +28,5 @@ public interface IPaymentService
     /// Gets all Payments with pagination.
     /// </summary>
     Task<Result<PaginatedList<Payment>>> GetAllAsync(int pageNumber, int pageSize, CancellationToken cancellationToken);
+    Task<bool> ExistsByIdAsync(long id, CancellationToken cancellationToken);
 }

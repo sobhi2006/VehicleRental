@@ -7,4 +7,8 @@ namespace CarRental.Domain.Interfaces;
 /// </summary>
 public interface IInvoiceRepository : IRepository<Invoice>
 {
+	Task DeleteLinesByInvoiceIdAsync(long invoiceId, CancellationToken cancellationToken);
+	Task<Invoice?> GetActiveByBookingIdAsync(long bookingId, CancellationToken cancellationToken);
+	Task<bool> ExistsActiveByBookingIdAsync(long bookingId, CancellationToken cancellationToken);
+	Task<bool> ExistsActiveByBookingIdExcludeSelfAsync(long id, long bookingId, CancellationToken cancellationToken);
 }

@@ -124,4 +124,9 @@ public class CurrencyService : ICurrencyService
         var NormalizedName = name.ToUpper();
         return await _repository.ExistsExcludeSelfAsync(id, c => c.Name.ToUpper() == NormalizedName, ct);
     }
+
+    public Task<bool> ExistsByIdAsync(long id, CancellationToken cancellationToken)
+    {
+        return _repository.ExistsAsync(c => c.Id == id, cancellationToken);
+    }
 }

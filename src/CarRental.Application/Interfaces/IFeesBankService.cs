@@ -32,4 +32,7 @@ public interface IFeesBankService
     Task<Result<PaginatedList<FeesBank>>> GetAllAsync(int pageNumber, int pageSize, CancellationToken cancellationToken);
     Task<bool> ExistsByNameAsync(string name, CancellationToken cancellationToken);
     Task<bool> ExistsByNameExcludeSelfAsync(UpdateFeesBankCommand request, CancellationToken cancellationToken);
+    Task<bool> ExistsByIdAsync(long id, CancellationToken cancellationToken);
+    Task<bool> ExistsByIdsAsync(IReadOnlyCollection<long> ids, CancellationToken cancellationToken);
+    Task<List<FeesBank>> GetByIdsAsync(IReadOnlyCollection<long> ids, CancellationToken cancellationToken);
 }

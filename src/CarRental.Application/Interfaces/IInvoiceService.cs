@@ -28,4 +28,5 @@ public interface IInvoiceService
     /// Gets all Invoices with pagination.
     /// </summary>
     Task<Result<PaginatedList<Invoice>>> GetAllAsync(int pageNumber, int pageSize, CancellationToken cancellationToken);
+    Task<bool> ExistsByIdAsync(long id, CancellationToken cancellationToken);
 }

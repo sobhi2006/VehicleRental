@@ -20,9 +20,9 @@ public class InvoiceLineConfiguration : IEntityTypeConfiguration<InvoiceLine>
         builder.Property(e => e.Id).ValueGeneratedOnAdd();
         
         builder.HasOne(e => e.Invoice)
-            .WithMany()
+            .WithMany(i => i.InvoiceLines)
             .HasForeignKey(e => e.InvoiceId)
-            .OnDelete(DeleteBehavior.Restrict);
+            .OnDelete(DeleteBehavior.Cascade);
         builder.Property(e => e.Description).IsRequired().HasMaxLength(500);
         builder.Property(e => e.Quantity).HasPrecision(18, 2);
         builder.Property(e => e.UnitPrice).HasPrecision(18, 2);

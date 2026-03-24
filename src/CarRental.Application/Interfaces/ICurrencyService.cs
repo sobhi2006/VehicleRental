@@ -30,4 +30,5 @@ public interface ICurrencyService
     Task<Result<PaginatedList<Currency>>> GetAllAsync(int pageNumber, int pageSize, CancellationToken cancellationToken);
     Task<bool> ExistByNameAsync(string name, CancellationToken ct);
     Task<bool> ExistByNameExcludeSelfAsync(long id, string name, CancellationToken ct);
+    Task<bool> ExistsByIdAsync(long id, CancellationToken cancellationToken);
 }

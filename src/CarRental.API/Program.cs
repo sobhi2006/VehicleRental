@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 /// <summary>
 /// Application entry point.
 /// </summary>
-public static class Program
+public partial class Program
 {
     /// <summary>
     /// Configures and runs the web application.
@@ -84,7 +84,15 @@ public static class Program
         using(var scope = app.Services.CreateScope())
         {
             var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-            await db.Database.MigrateAsync();  
+
+            if (app.Environment.IsEnvironment("Testing"))
+            {
+                await db.Database.EnsureCreatedAsync();
+            }
+            else
+            {
+                await db.Database.MigrateAsync();
+            }
         }
 
         app.MapGet("/", () =>

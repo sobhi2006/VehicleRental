@@ -26,10 +26,10 @@ public class ReturnVehicleConfiguration : IEntityTypeConfiguration<ReturnVehicle
             .OnDelete(DeleteBehavior.Restrict);
         builder.Property(e => e.ConditionNotes).HasMaxLength(500);
         builder.Property(e => e.MileageAfter).HasPrecision(18, 2);
-        builder.HasOne(e => e.FeesBank)
-            .WithMany()
-            .HasForeignKey(e => e.ExcessMileageFess)
-            .OnDelete(DeleteBehavior.Restrict);
+        builder.HasMany(e => e.ReturnVehicleFeesBanks)
+            .WithOne(e => e.ReturnVehicle)
+            .HasForeignKey(e => e.ReturnVehicleId)
+            .OnDelete(DeleteBehavior.Cascade);
         builder.HasOne(e => e.DamageVehicle)
             .WithMany()
             .HasForeignKey(e => e.DamageId)

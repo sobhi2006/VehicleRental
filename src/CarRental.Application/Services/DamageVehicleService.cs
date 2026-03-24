@@ -128,4 +128,9 @@ public class DamageVehicleService : IDamageVehicleService
 
         return Result<PaginatedList<DamageVehicle>>.Success(paginated);
     }
+
+    public Task<bool> ExistsByIdAsync(long id, CancellationToken cancellationToken)
+    {
+        return _repository.ExistsAsync(d => d.Id == id, cancellationToken);
+    }
 }

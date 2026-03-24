@@ -24,4 +24,5 @@ public class BookingVehicle : BaseEntity
     public virtual Driver? Driver { get; set; }
     /// <summary>Gets or sets the related Vehicle.</summary>
     public virtual Vehicle? Vehicle { get; set; }
+    public virtual List<Payment> Payments { get; set; } = [];
 }

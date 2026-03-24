@@ -133,4 +133,27 @@ public class FeesBankService : IFeesBankService
             f => f.Name.ToUpper() == normalizedName,
             cancellationToken);
     }
+
+    public Task<bool> ExistsByIdAsync(long id, CancellationToken cancellationToken)
+    {
+        return _repository.ExistsAsync(f => f.Id == id, cancellationToken);
+    }
+
+    public async Task<bool> ExistsByIdsAsync(IReadOnlyCollection<long> ids, CancellationToken cancellationToken)
+    {
+        if (ids.Count == 0)
+        {
+            return true;
+        }
+
+        var distinctIds = ids.Distinct().ToArray();
+        var existingCount = await _repository.CountByIdsAsync(distinctIds, cancellationToken);
+        return existingCount == distinctIds.Length;
+    }
+
+    public Task<List<FeesBank>> GetByIdsAsync(IReadOnlyCollection<long> ids, CancellationToken cancellationToken)
+    {
+        var distinctIds = ids.Distinct().ToArray();
+        return _repository.GetByIdsAsync(distinctIds, cancellationToken);
+    }
 }

@@ -15,14 +15,12 @@ public class ReturnVehicle : BaseEntity
     public DateTime ActualReturnDate { get; set; }
     /// <summary>Gets or sets the MileageAfter.</summary>
     public decimal MileageAfter { get; set; }
-    /// <summary>Gets or sets the ExcessMileageFess.</summary>
-    public long? ExcessMileageFess { get; set; }
     /// <summary>Gets or sets the DamageId.</summary>
     public long? DamageId{ get; set; }
     /// <summary>Gets or sets the related BookingVehicle.</summary>
     public virtual BookingVehicle? BookingVehicle { get; set; }
-    /// <summary>Gets or sets the related FeesBank.</summary>
-    public virtual FeesBank? FeesBank { get; set; }
+    /// <summary>Gets or sets the related return-fees mappings.</summary>
+    public virtual List<ReturnVehicleFeesBank> ReturnVehicleFeesBanks { get; set; } = [];
     /// <summary>Gets or sets the related DamageVehicle.</summary>
     public virtual DamageVehicle? DamageVehicle { get; set; }
 }

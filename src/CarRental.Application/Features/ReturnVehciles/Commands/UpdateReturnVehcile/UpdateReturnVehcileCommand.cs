@@ -19,8 +19,8 @@ public record UpdateReturnVehicleCommand : IRequest<Result<ReturnVehicleDto>>
     public DateTime ActualReturnDate { get; init; }
     /// <summary>Gets or sets the MileageAfter.</summary>
     public decimal MileageAfter { get; init; }
-    /// <summary>Gets or sets the ExcessMileageFess.</summary>
-    public long? ExcessMileageFess { get; init; }
+    /// <summary>Gets or sets the FeesBankIds to apply.</summary>
+    public List<long> FeesBankIds { get; init; } = [];
     /// <summary>Gets or sets the DamageId.</summary>
     public long? DamageId{ get; init; }
 }

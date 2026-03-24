@@ -31,4 +31,5 @@ public interface IDamageVehicleService
     /// Gets all DamageVehicles with pagination.
     /// </summary>
     Task<Result<PaginatedList<DamageVehicle>>> GetAllAsync(int pageNumber, int pageSize, CancellationToken cancellationToken);
+    Task<bool> ExistsByIdAsync(long id, CancellationToken cancellationToken);
 }

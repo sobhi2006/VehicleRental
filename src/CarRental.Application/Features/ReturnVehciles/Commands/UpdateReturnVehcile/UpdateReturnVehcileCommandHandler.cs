@@ -30,7 +30,7 @@ public class UpdateReturnVehicleCommandHandler : IRequestHandler<UpdateReturnVeh
     public async Task<Result<ReturnVehicleDto>> Handle(UpdateReturnVehicleCommand request, CancellationToken cancellationToken)
     {
         var entity = _mapper.Map<ReturnVehicle>(request);
-        var result = await _service.UpdateAsync(entity, cancellationToken);
+        var result = await _service.UpdateAsync(entity, request.FeesBankIds, cancellationToken);
         return result.MapResult(value => _mapper.Map<ReturnVehicleDto>(value));
     }
 }

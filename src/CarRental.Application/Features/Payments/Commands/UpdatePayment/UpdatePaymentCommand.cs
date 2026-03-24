@@ -20,6 +20,4 @@ public record UpdatePaymentCommand : IRequest<Result<PaymentDto>>
     public decimal Amount { get; init; }
     /// <summary>Gets or sets the Type.</summary>
     public AmountType Type { get; init; }
-    /// <summary>Gets or sets the Status.</summary>
-    public PaymentStatus Status { get; init; }
 }

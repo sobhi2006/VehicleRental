@@ -2,7 +2,9 @@ using CarRental.Application.Common;
 using CarRental.Application.Features.BookingVehicles.Commands.CreateBookingVehicle;
 using CarRental.Application.Features.BookingVehicles.Commands.UpdateBookingVehicle;
 using CarRental.Application.Interfaces;
+using CarRental.Domain.Entities;
 using CarRental.Domain.Entities.Vehicles;
+using CarRental.Domain.Enums;
 using CarRental.Domain.Interfaces;
 
 namespace CarRental.Application.Services;
@@ -13,14 +15,22 @@ namespace CarRental.Application.Services;
 public class BookingVehicleService : IBookingVehicleService
 {
     private readonly IBookingVehicleRepository _repository;
+    private readonly IPaymentRepository _paymentRepository;
+    private readonly IInvoiceRepository _invoiceRepository;
     private readonly IUnitOfWork _unitOfWork;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="BookingVehicleService"/> class.
     /// </summary>
-    public BookingVehicleService(IBookingVehicleRepository repository, IUnitOfWork unitOfWork)
+    public BookingVehicleService(
+        IBookingVehicleRepository repository,
+        IPaymentRepository paymentRepository,
+        IInvoiceRepository invoiceRepository,
+        IUnitOfWork unitOfWork)
     {
         _repository = repository;
+        _paymentRepository = paymentRepository;
+        _invoiceRepository = invoiceRepository;
         _unitOfWork = unitOfWork;
     }
 
@@ -53,6 +63,11 @@ public class BookingVehicleService : IBookingVehicleService
         entity.Notes = request.Notes;
         entity.PickUpDate = request.PickUpDate;
         entity.DropOffDate = request.DropOffDate;
+
+        if (entity.Status == StatusBooking.Cancelled)
+        {
+            await CancelRelatedEntitiesAsync(entity.Id, cancellationToken);
+        }
 
         await _repository.UpdateAsync(entity, cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
@@ -126,5 +141,27 @@ public class BookingVehicleService : IBookingVehicleService
     public async Task<bool> IsBookingVehicleExistAsync(long id, CancellationToken ct)
     {
         return await _repository.IsBookingVehicleExistAsync(id, ct);
+    }
+
+    public Task<bool> ExistsByIdAsync(long id, CancellationToken ct)
+    {
+        return _repository.ExistsAsync(b => b.Id == id, ct);
+    }
+
+    private async Task CancelRelatedEntitiesAsync(long bookingId, CancellationToken cancellationToken)
+    {
+        var payments = await _paymentRepository.GetByBookingIdAsync(bookingId, cancellationToken);
+        foreach (var payment in payments.Where(p => p.Status != PaymentStatus.Cancelled))
+        {
+            payment.Status = PaymentStatus.Cancelled;
+        }
+
+        var invoice = await _invoiceRepository.GetActiveByBookingIdAsync(bookingId, cancellationToken);
+        if(invoice is null)
+            return;
+            
+        invoice.Status = InvoiceStatus.Cancelled;
+        invoice.PaidAmount = 0;
+        await _unitOfWork.SaveChangesAsync();
     }
 }
