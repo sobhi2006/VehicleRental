@@ -187,6 +187,9 @@ Content-Type: application/json
 	"description": "Unblocked after review"
 }
 
+### BlockListCustomers - Delete
+# Not available: there is no DELETE endpoint in BlockListCustomersController.
+
 ########################################
 ### FEES BANKS COLLECTION
 ########################################
@@ -441,8 +444,7 @@ Content-Type: application/json
 	"bookingId": 1,
 	"currencyId": 1,
 	"amount": 100.50,
-	"type": 0,
-	"status": 0
+	"type": 1
 }
 
 ### Payments - Update
@@ -454,8 +456,7 @@ Content-Type: application/json
 	"bookingId": 1,
 	"currencyId": 1,
 	"amount": 120.75,
-	"type": 1,
-	"status": 1
+	"type": 2
 }
 
 ### Payments - Delete
@@ -479,8 +480,6 @@ Content-Type: application/json
 	"bookingId": 1,
 	"issueDate": "2026-03-06T00:00:00Z",
 	"totalAmount": 500.00,
-	"paidAmount": 100.00,
-	"status": 0,
 	"invoiceLines": []
 }
 
@@ -493,8 +492,6 @@ Content-Type: application/json
 	"bookingId": 1,
 	"issueDate": "2026-03-07T00:00:00Z",
 	"totalAmount": 520.00,
-	"paidAmount": 200.00,
-	"status": 1,
 	"invoiceLines": []
 }
 
@@ -520,7 +517,7 @@ Content-Type: application/json
 	"conditionNotes": "Returned in good condition",
 	"actualReturnDate": "2026-03-06T18:00:00Z",
 	"mileageAfter": 25000,
-	"excessMileageFess": 0,
+	"feesBankIds": [1],
 	"damageId": null
 }
 
@@ -534,7 +531,7 @@ Content-Type: application/json
 	"conditionNotes": "Minor scratch found",
 	"actualReturnDate": "2026-03-06T19:00:00Z",
 	"mileageAfter": 25100,
-	"excessMileageFess": 10,
+	"feesBankIds": [1, 2],
 	"damageId": 1
 }
 
