@@ -37,6 +37,6 @@ public class CreateCurrencyCommandValidator : AbstractValidator<CreateCurrencyCo
             .MaximumLength(500).WithMessage("Name must not exceed 500 characters.");
 
         RuleFor(x => x.ValueVsOneDollar)
-            .GreaterThanOrEqualTo(0).WithMessage("ValueVsOneDollar must be greater than or equal to 0.");
+            .GreaterThan(0).WithMessage("ValueVsOneDollar must be greater than 0.");
     }
 }

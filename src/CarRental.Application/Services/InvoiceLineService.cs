@@ -49,7 +49,6 @@ public class InvoiceLineService : IInvoiceLineService
         entity.Description = request.Description;
         entity.Quantity = request.Quantity;
         entity.UnitPrice = request.UnitPrice;
-        entity.LineTotal = request.LineTotal;
 
         await _repository.UpdateAsync(entity, cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);

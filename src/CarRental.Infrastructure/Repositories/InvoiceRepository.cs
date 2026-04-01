@@ -41,7 +41,7 @@ public class InvoiceRepository : BaseRepository<Invoice>, IInvoiceRepository
             .ExecuteDeleteAsync(cancellationToken);
     }
 
-    public async Task<Invoice?> GetActiveByBookingIdAsync(long bookingId, CancellationToken cancellationToken)
+    public async Task<Invoice?> GetInvoiceByBookingIdAsync(long bookingId, CancellationToken cancellationToken)
     {
         return await _dbSet
             .Include(e => e.InvoiceLines)

@@ -25,7 +25,7 @@ public class BookingVehicleConfiguration : IEntityTypeConfiguration<BookingVehic
             .HasForeignKey(e => e.DriverId)
             .OnDelete(DeleteBehavior.Restrict);
         builder.HasOne(e => e.Vehicle)
-            .WithMany()
+            .WithMany(b => b.BookingVehicles)
             .HasForeignKey(e => e.VehicleId)
             .OnDelete(DeleteBehavior.Restrict);
         builder.Property(e => e.Notes).HasMaxLength(500);

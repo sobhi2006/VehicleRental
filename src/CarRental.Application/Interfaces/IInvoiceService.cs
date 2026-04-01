@@ -9,14 +9,6 @@ namespace CarRental.Application.Interfaces;
 public interface IInvoiceService
 {
     /// <summary>
-    /// Creates a new Invoice.
-    /// </summary>
-    Task<Result<Invoice>> CreateAsync(Invoice entity, CancellationToken cancellationToken);
-    /// <summary>
-    /// Updates an existing Invoice.
-    /// </summary>
-    Task<Result<Invoice>> UpdateAsync(Invoice entity, CancellationToken cancellationToken);
-    /// <summary>
     /// Deletes an existing Invoice.
     /// </summary>
     Task<Result> DeleteAsync(long id, CancellationToken cancellationToken);

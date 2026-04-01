@@ -35,4 +35,5 @@ public class Vehicle : BaseEntity
     public virtual Make Make { get; set; } = null!;
     /// <summary>Gets or sets the related Classification.</summary>
     public virtual Classification Classification { get; set; } = null!;
+    public virtual List<BookingVehicle> BookingVehicles { get; set; } = [];
 }

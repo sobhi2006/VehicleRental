@@ -156,12 +156,17 @@ public class BookingVehicleService : IBookingVehicleService
             payment.Status = PaymentStatus.Cancelled;
         }
 
-        var invoice = await _invoiceRepository.GetActiveByBookingIdAsync(bookingId, cancellationToken);
+        var invoice = await _invoiceRepository.GetInvoiceByBookingIdAsync(bookingId, cancellationToken);
         if(invoice is null)
             return;
             
         invoice.Status = InvoiceStatus.Cancelled;
         invoice.PaidAmount = 0;
         await _unitOfWork.SaveChangesAsync();
+    }
+
+    public async Task<decimal> GetCurrentMilageByBookingVehicleIdAsync(long bookingVehicleId, CancellationToken cancellationToken)
+    {
+        return await _repository.GetCurrentMilageByBookingVehicleIdAsync(bookingVehicleId, cancellationToken);
     }
 }

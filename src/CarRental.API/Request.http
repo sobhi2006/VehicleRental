@@ -266,7 +266,7 @@ GET {{BaseUrl}}/api/v{{ApiVersion}}/Vehicles/{{Id}}
 
 ### Vehicles - Create
 POST {{BaseUrl}}/api/v{{ApiVersion}}/Vehicles
-Content-Type: application/json
+Content-Type: multipart/form-data
 
 {
 	"makeId": 1,
@@ -284,7 +284,7 @@ Content-Type: application/json
 
 ### Vehicles - Update
 PUT {{BaseUrl}}/api/v{{ApiVersion}}/Vehicles
-Content-Type: application/json
+Content-Type: multipart/form-data
 
 {
 	"id": 1,
@@ -359,12 +359,12 @@ POST {{BaseUrl}}/api/v{{ApiVersion}}/BookingVehicles
 Content-Type: application/json
 
 {
-	"driverId": 10,
-	"vehicleId": 22,
+	"driverId": 1,
+	"vehicleId": 1,
 	"status": 1,
 	"notes": "Weekend booking",
-	"pickUpDate": "2026-03-16T18:00:00Z",
-	"dropOffDate": "2026-04-17T18:00:00Z"
+	"pickUpDate": "2026-03-31T18:00:00Z",
+	"dropOffDate": "2026-03-31T19:00:00Z"
 }
 
 ### BookingVehicles - Update
@@ -443,7 +443,7 @@ Content-Type: application/json
 {
 	"bookingId": 1,
 	"currencyId": 1,
-	"amount": 100.50,
+	"amount": 11898.25,
 	"type": 1
 }
 
@@ -472,29 +472,6 @@ GET {{BaseUrl}}/api/v{{ApiVersion}}/Invoices?pageNumber={{PageNumber}}&pageSize=
 ### Invoices - Get By Id
 GET {{BaseUrl}}/api/v{{ApiVersion}}/Invoices/{{Id}}
 
-### Invoices - Create
-POST {{BaseUrl}}/api/v{{ApiVersion}}/Invoices
-Content-Type: application/json
-
-{
-	"bookingId": 1,
-	"issueDate": "2026-03-06T00:00:00Z",
-	"totalAmount": 500.00,
-	"invoiceLines": []
-}
-
-### Invoices - Update
-PUT {{BaseUrl}}/api/v{{ApiVersion}}/Invoices
-Content-Type: application/json
-
-{
-	"id": 1,
-	"bookingId": 1,
-	"issueDate": "2026-03-07T00:00:00Z",
-	"totalAmount": 520.00,
-	"invoiceLines": []
-}
-
 ### Invoices - Delete
 DELETE {{BaseUrl}}/api/v{{ApiVersion}}/Invoices/{{Id}}
 
@@ -515,7 +492,7 @@ Content-Type: application/json
 {
 	"bookingId": 1,
 	"conditionNotes": "Returned in good condition",
-	"actualReturnDate": "2026-03-06T18:00:00Z",
+	"actualReturnDate": "2026-04-01T01:00:00Z",
 	"mileageAfter": 25000,
 	"feesBankIds": [1],
 	"damageId": null
@@ -526,13 +503,13 @@ PUT {{BaseUrl}}/api/v{{ApiVersion}}/ReturnVehicles
 Content-Type: application/json
 
 {
-	"id": 1,
+	"id": 4,
 	"bookingId": 1,
 	"conditionNotes": "Minor scratch found",
-	"actualReturnDate": "2026-03-06T19:00:00Z",
+	"actualReturnDate": "2026-04-01T01:00:00Z",
 	"mileageAfter": 25100,
-	"feesBankIds": [1, 2],
-	"damageId": 1
+	"feesBankIds": [1],
+	"damageId": null
 }
 
 ### ReturnVehicles - Delete

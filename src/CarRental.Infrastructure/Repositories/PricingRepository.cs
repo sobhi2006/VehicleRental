@@ -18,6 +18,13 @@ public class PricingRepository : BaseRepository<Pricing>, IPricingRepository
     {
     }
 
+    public async Task<Pricing?> GetPricingByBookingIdAsync(long bookingId, CancellationToken cancellationToken)
+    {
+        return await _context.BookingVehicles.Where(b => b.Id == bookingId)
+                                             .Select(b => b.Vehicle!.Classification.Pricing)
+                                             .FirstOrDefaultAsync();
+    }
+
     // public override async Task<Pricing?> GetByIdAsync(long id, CancellationToken cancellationToken = default)
     // {
     //     return await _dbSet

@@ -13,6 +13,10 @@ namespace CarRental.Application.Services;
 public class ReturnVehicleService : IReturnVehicleService
 {
     private const string ReturnFeeLinePrefix = "RETURN_FEE:";
+    private DateTime _dropOffDateBooking;
+    private DateTime _pickUpDateBooking;
+    private decimal _MileageBefore;
+    private decimal _MileageAfter;
 
     private readonly IReturnVehicleRepository _repository;
     private readonly IUnitOfWork _unitOfWork;
@@ -21,6 +25,8 @@ public class ReturnVehicleService : IReturnVehicleService
     private readonly IFeesBankService _feesBankService;
     private readonly IInvoiceRepository _invoiceRepository;
     private readonly IPaymentRepository _paymentRepository;
+    private readonly IPricingRepository _pricingRepository;
+    private readonly IVehicleRepository _vehicleRepository;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ReturnVehicleService"/> class.
@@ -32,7 +38,9 @@ public class ReturnVehicleService : IReturnVehicleService
         IDamageVehicleService damageVehicleService,
         IFeesBankService feesBankService,
         IInvoiceRepository invoiceRepository,
-        IPaymentRepository paymentRepository)
+        IPaymentRepository paymentRepository,
+        IPricingRepository pricingRepository,
+        IVehicleRepository vehicleRepository)
     {
         _repository = repository;
         _unitOfWork = unitOfWork;
@@ -41,6 +49,8 @@ public class ReturnVehicleService : IReturnVehicleService
         _feesBankService = feesBankService;
         _invoiceRepository = invoiceRepository;
         _paymentRepository = paymentRepository;
+        _pricingRepository = pricingRepository;
+        _vehicleRepository = vehicleRepository;
     }
 
     /// <summary>
@@ -48,23 +58,22 @@ public class ReturnVehicleService : IReturnVehicleService
     /// </summary>
     public async Task<Result<ReturnVehicle>> CreateAsync(ReturnVehicle request, IReadOnlyCollection<long> feesBankIds, CancellationToken cancellationToken)
     {
-        var normalizedFeesBankIds = (feesBankIds ?? Array.Empty<long>()).Distinct().ToArray();
-
-        var validationError = await ValidateReturnRequestAsync(request, normalizedFeesBankIds, cancellationToken);
-        if (validationError is not null)
-        {
-            return Result<ReturnVehicle>.Failure(validationError);
-        }
-
         var alreadyExists = await _repository.ExistsByBookingIdAsync(request.BookingId, cancellationToken);
         if (alreadyExists)
         {
             return Result<ReturnVehicle>.Failure("A return record already exists for this booking.");
         }
 
-        AttachFeesBanks(request, normalizedFeesBankIds);
+        var validationError = await ValidateReturnRequestAsync(request, feesBankIds, cancellationToken);
+        if (validationError is not null)
+        {
+            return Result<ReturnVehicle>.Failure(validationError);
+        }
 
-        var feesBanks = await _feesBankService.GetByIdsAsync(normalizedFeesBankIds, cancellationToken);
+        AttachFeesBanks(request, feesBankIds);
+        _MileageAfter = request.MileageAfter;
+
+        var feesBanks = await _feesBankService.GetByIdsAsync(feesBankIds, cancellationToken);
         await UpsertReturnInvoiceAsync(request.BookingId, request.ActualReturnDate, feesBanks, cancellationToken);
 
         await _repository.AddAsync(request, cancellationToken);
@@ -85,9 +94,7 @@ public class ReturnVehicleService : IReturnVehicleService
             return Result<ReturnVehicle>.Failure("ReturnVehicle not found.");
         }
 
-        var normalizedFeesBankIds = (feesBankIds ?? Array.Empty<long>()).Distinct().ToArray();
-
-        var validationError = await ValidateReturnRequestAsync(request, normalizedFeesBankIds, cancellationToken);
+        var validationError = await ValidateReturnRequestAsync(request, feesBankIds, cancellationToken);
         if (validationError is not null)
         {
             return Result<ReturnVehicle>.Failure(validationError);
@@ -106,9 +113,11 @@ public class ReturnVehicleService : IReturnVehicleService
         entity.DamageId = request.DamageId;
 
         entity.ReturnVehicleFeesBanks.Clear();
-        AttachFeesBanks(entity, normalizedFeesBankIds);
+        AttachFeesBanks(entity, feesBankIds);
 
-        var feesBanks = await _feesBankService.GetByIdsAsync(normalizedFeesBankIds, cancellationToken);
+        _MileageAfter = request.MileageAfter;
+
+        var feesBanks = await _feesBankService.GetByIdsAsync(feesBankIds, cancellationToken);
         await UpsertReturnInvoiceAsync(entity.BookingId, entity.ActualReturnDate, feesBanks, cancellationToken);
 
         await _repository.UpdateAsync(entity, cancellationToken);
@@ -194,6 +203,8 @@ public class ReturnVehicleService : IReturnVehicleService
         {
             return "Booking not found.";
         }
+        _dropOffDateBooking = bookingResult.Value.DropOffDate;
+        _pickUpDateBooking = bookingResult.Value.PickUpDate;
 
         if (request.ActualReturnDate < bookingResult.Value.PickUpDate)
         {
@@ -225,7 +236,7 @@ public class ReturnVehicleService : IReturnVehicleService
 
     private static void AttachFeesBanks(ReturnVehicle returnVehicle, IReadOnlyCollection<long> feesBankIds)
     {
-        foreach (var feesBankId in feesBankIds)
+        foreach (var feesBankId in feesBankIds.Distinct())
         {
             returnVehicle.ReturnVehicleFeesBanks.Add(new ReturnVehicleFeesBank
             {
@@ -236,28 +247,67 @@ public class ReturnVehicleService : IReturnVehicleService
 
     private async Task UpsertReturnInvoiceAsync(long bookingId, DateTime issueDate, IReadOnlyCollection<FeesBank> feesBanks, CancellationToken cancellationToken)
     {
-        var invoice = await _invoiceRepository.GetActiveByBookingIdAsync(bookingId, cancellationToken);
+        var invoice = await _invoiceRepository.GetInvoiceByBookingIdAsync(bookingId, cancellationToken);
 
         var returnLines = feesBanks.Select(feesBank => new InvoiceLine
         {
             Description = $"{ReturnFeeLinePrefix}{feesBank.Id}:{feesBank.Name}",
             Quantity = 1,
             UnitPrice = feesBank.Amount,
-            LineTotal = feesBank.Amount
         }).ToList();
+
+        var pricing = await _pricingRepository.GetPricingByBookingIdAsync(bookingId, cancellationToken);
+        if (pricing != null)
+        {
+            var ReturnDateLate = (DateTime.UtcNow - _dropOffDateBooking).Days;
+            var amountReturnLate =  ReturnDateLate * pricing.CostPerLateDay;
+
+            var ReturnDate = (_dropOffDateBooking - _pickUpDateBooking).Days;
+            var amountReturn =  ReturnDate == 0 ? pricing.PaymentPerDay : ReturnDate * pricing.PaymentPerDay;
+
+            var amountExcessMileage = (_MileageAfter - await _bookingVehicleService.GetCurrentMilageByBookingVehicleIdAsync(bookingId, cancellationToken)) * pricing.CostPerExKm;
+            if (amountExcessMileage > 0)
+            {
+                returnLines.Add(new InvoiceLine
+                {
+                    Description = $"{ReturnFeeLinePrefix}:EXCESS_MILEAGE_FEE",
+                    Quantity = 1,
+                    UnitPrice = amountExcessMileage,
+                });
+            }
+
+            if (amountReturnLate > 0)
+            {
+                returnLines.Add(new InvoiceLine
+                {
+                    Description = $"{ReturnFeeLinePrefix}:LATE_RETURN_FEE",
+                    Quantity = 1,
+                    UnitPrice = amountReturnLate,
+                });
+            }
+            if(amountReturn > 0)
+            {
+                returnLines.Add(new InvoiceLine
+                {
+                    Description = $"RETURN VEHICLE",
+                    Quantity = 1,
+                    UnitPrice = amountReturn,
+                });
+            }
+        }
+
+        var netCompletedAmount = await _paymentRepository.GetNetCompletedAmountByBookingIdAsync(bookingId, cancellationToken);
+        var totalAmount = returnLines.Sum(line => line.LineTotal);
 
         if (invoice is null)
         {
-            var netCompletedAmount = await _paymentRepository.GetNetCompletedAmountByBookingIdAsync(bookingId, cancellationToken);
-            var totalAmount = returnLines.Sum(line => line.LineTotal);
-
             var newInvoice = new Invoice
             {
                 BookingId = bookingId,
                 IssueDate = issueDate,
                 InvoiceLines = returnLines,
                 TotalAmount = totalAmount,
-                PaidAmount = Math.Min(netCompletedAmount, totalAmount),
+                PaidAmount = netCompletedAmount,
                 Status = Math.Min(netCompletedAmount, totalAmount) >= totalAmount
                     ? InvoiceStatus.Paid
                     : InvoiceStatus.Pending
@@ -267,15 +317,17 @@ public class ReturnVehicleService : IReturnVehicleService
             return;
         }
 
-        invoice.InvoiceLines.RemoveAll(line => line.Description.StartsWith(ReturnFeeLinePrefix, StringComparison.Ordinal));
+        invoice.InvoiceLines.Clear();
         invoice.InvoiceLines.AddRange(returnLines);
 
-        invoice.TotalAmount = invoice.InvoiceLines.Sum(line => line.LineTotal);
+        invoice.TotalAmount = totalAmount;
         invoice.IssueDate = issueDate;
-        invoice.PaidAmount = Math.Min(invoice.PaidAmount, invoice.TotalAmount);
-        invoice.Status = invoice.PaidAmount >= invoice.TotalAmount
-            ? InvoiceStatus.Paid
-            : InvoiceStatus.Pending;
+        invoice.PaidAmount = netCompletedAmount;
+        invoice.Status = Math.Min(netCompletedAmount, totalAmount) >= totalAmount
+                    ? InvoiceStatus.Paid
+                    : InvoiceStatus.Pending;
+
+        await _vehicleRepository.UpdateCurrentMilage(_MileageAfter, cancellationToken);
 
         await _invoiceRepository.UpdateAsync(invoice, cancellationToken);
     }

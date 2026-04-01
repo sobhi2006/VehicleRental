@@ -4,7 +4,7 @@ using CarRental.Application.Features.BlockListCustomers.Commands.CreateBlockList
 using CarRental.Application.Features.BlockListCustomers.Commands.UpdateBlockListCustomer;
 using CarRental.Domain.Entities;
 
-namespace CarRental.Application.Mappings;
+namespace CarRental.Application.Features.BlockListCustomers;
 
 /// <summary>
 /// AutoMapper profile for BlockListCustomer mappings.

@@ -26,7 +26,7 @@ public class InvoiceLineConfiguration : IEntityTypeConfiguration<InvoiceLine>
         builder.Property(e => e.Description).IsRequired().HasMaxLength(500);
         builder.Property(e => e.Quantity).HasPrecision(18, 2);
         builder.Property(e => e.UnitPrice).HasPrecision(18, 2);
-        builder.Property(e => e.LineTotal).HasPrecision(18, 2);
+        builder.Ignore(p => p.LineTotal);
 
         builder.Property(e => e.CreatedAt).IsRequired();
     }

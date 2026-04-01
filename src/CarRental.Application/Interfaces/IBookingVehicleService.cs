@@ -33,4 +33,5 @@ public interface IBookingVehicleService
     Task<bool> IsVehicleAvailableForBookingAsync(long vehicleId, DateTime pickUpDate, DateTime dropOffDate, CancellationToken cancellationToken, long? excludeBookingVehicleId = null);
     Task<bool> IsBookingVehicleExistAsync(long id, CancellationToken ct);
     Task<bool> ExistsByIdAsync(long id, CancellationToken ct);
+    Task<decimal> GetCurrentMilageByBookingVehicleIdAsync(long bookingVehicleId, CancellationToken cancellationToken);
 }

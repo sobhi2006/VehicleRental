@@ -8,4 +8,5 @@ namespace CarRental.Domain.Interfaces;
 /// </summary>
 public interface IPricingRepository : IRepository<Pricing>
 {
+    Task<Pricing?> GetPricingByBookingIdAsync(long bookingId, CancellationToken cancellationToken);
 }

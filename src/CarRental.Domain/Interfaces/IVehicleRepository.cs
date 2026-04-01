@@ -10,5 +10,6 @@ namespace CarRental.Domain.Interfaces;
 public interface IVehicleRepository : IRepository<Vehicle>
 {
     Task<bool> IsVehicleAvailableAsync(long vehicleId, DateTime pickUpDate, DateTime dropOffDate, CancellationToken cancellationToken);
+    Task UpdateCurrentMilage(decimal mileageAfter, CancellationToken cancellationToken);
     Task UpdateStatus(long vehicleId, StatusVehicle maintenance, CancellationToken cancellationToken);
 }

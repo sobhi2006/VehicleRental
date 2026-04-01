@@ -23,7 +23,7 @@ public class PaymentRepository : BaseRepository<Payment>, IPaymentRepository
         var completedPayments = await _dbSet
             .AsNoTracking()
             .Where(p => p.BookingId == bookingId && p.Status == PaymentStatus.Completed)
-            .Select(p => p.Type == AmountType.Given ? p.Amount : -p.Amount)
+            .Select(p => (p.Type == AmountType.Given ? p.Amount : -p.Amount) / p.Currency.ValueVsOneDollar)
             .SumAsync(cancellationToken);
 
         return completedPayments < 0 ? 0 : completedPayments;

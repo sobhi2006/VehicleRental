@@ -19,6 +19,13 @@ public class BookingVehicleRepository : BaseRepository<BookingVehicle>, IBooking
     {
     }
 
+    public async Task<decimal> GetCurrentMilageByBookingVehicleIdAsync(long bookingVehicleId, CancellationToken cancellationToken)
+    {
+        return await _dbSet.Where(b => b.Id == bookingVehicleId)
+                           .Select(b => b.Vehicle!.CurrentMileage)
+                           .FirstOrDefaultAsync(cancellationToken);
+    }
+
     public async Task<bool> IsBookingVehicleExistAsync(long id, CancellationToken ct)
     {
         return await _dbSet.AnyAsync(bv => bv.Id == id 
