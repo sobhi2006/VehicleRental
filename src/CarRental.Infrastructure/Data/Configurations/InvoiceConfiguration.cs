@@ -20,8 +20,8 @@ public class InvoiceConfiguration : IEntityTypeConfiguration<Invoice>
         builder.Property(e => e.Id).ValueGeneratedOnAdd();
         
         builder.HasOne(e => e.BookingVehicle)
-            .WithMany()
-            .HasForeignKey(e => e.BookingId)
+            .WithOne()
+            .HasForeignKey<Invoice>(e => e.BookingId)
             .OnDelete(DeleteBehavior.Restrict);
         builder.Property(e => e.TotalAmount).HasPrecision(18, 2);
         builder.Property(e => e.PaidAmount).HasPrecision(18, 2);

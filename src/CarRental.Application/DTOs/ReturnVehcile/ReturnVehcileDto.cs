@@ -23,4 +23,6 @@ public record ReturnVehicleDto
     public DateTime CreatedAt { get; init; }
     /// <summary>Gets or sets the last update timestamp.</summary>
     public DateTime? UpdatedAt { get; init; }
+    /// <summary>Gets or sets the associated InvoiceId.</summary>
+    public long InvoiceId { get; init; }
 }

@@ -23,4 +23,6 @@ public class ReturnVehicle : BaseEntity
     public virtual List<ReturnVehicleFeesBank> ReturnVehicleFeesBanks { get; set; } = [];
     /// <summary>Gets or sets the related DamageVehicle.</summary>
     public virtual DamageVehicle? DamageVehicle { get; set; }
+    public long InvoiceId { get; set; }
+    public Invoice? Invoice { get; set; }
 }

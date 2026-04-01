@@ -36,5 +36,10 @@ public class ReturnVehicleConfiguration : IEntityTypeConfiguration<ReturnVehicle
             .OnDelete(DeleteBehavior.Restrict);
 
         builder.Property(e => e.CreatedAt).IsRequired();
+
+        builder.HasOne<Invoice>(i => i.Invoice)
+               .WithOne()
+               .HasForeignKey<ReturnVehicle>(r => r.InvoiceId)
+               .OnDelete(DeleteBehavior.Restrict);
     }
 }

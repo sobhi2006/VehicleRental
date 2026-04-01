@@ -11,4 +11,5 @@ public interface IInvoiceRepository : IRepository<Invoice>
 	Task<Invoice?> GetInvoiceByBookingIdAsync(long bookingId, CancellationToken cancellationToken);
 	Task<bool> ExistsActiveByBookingIdAsync(long bookingId, CancellationToken cancellationToken);
 	Task<bool> ExistsActiveByBookingIdExcludeSelfAsync(long id, long bookingId, CancellationToken cancellationToken);
+	Task<long> GetInvoiceIdByBookingIdAsync(long bookingId, CancellationToken cancellationToken);
 }

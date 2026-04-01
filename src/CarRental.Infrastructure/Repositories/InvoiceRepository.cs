@@ -62,6 +62,14 @@ public class InvoiceRepository : BaseRepository<Invoice>, IInvoiceRepository
             cancellationToken);
     }
 
+    public async Task<long> GetInvoiceIdByBookingIdAsync(long bookingId, CancellationToken cancellationToken)
+    {
+        return await _dbSet
+            .Where(e => e.BookingId == bookingId && e.Status != InvoiceStatus.Cancelled)
+            .Select(e => e.Id)
+            .FirstOrDefaultAsync(cancellationToken);
+    }
+
     // public override async Task<Invoice?> GetByIdAsync(long id, CancellationToken cancellationToken = default)
     // {
     //     return await _dbSet
