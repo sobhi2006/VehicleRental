@@ -5,6 +5,9 @@ using CarRental.Infrastructure;
 using Microsoft.OpenApi.Models;
 using CarRental.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
+using CarRental.API.Authorization;
+using Microsoft.AspNetCore.Authorization;
+using CarRental.Infrastructure.Identity;
 
 /// <summary>
 /// Application entry point.
@@ -37,6 +40,31 @@ public partial class Program
         {
             c.SwaggerDoc("v1", new OpenApiInfo { Title = "CarRental API", Version = "v1" });
             c.DocInclusionPredicate((docName, apiDesc) => apiDesc.GroupName == docName);
+
+            c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+            {
+                Name = "Authorization",
+                Type = SecuritySchemeType.Http,
+                Scheme = "bearer",
+                BearerFormat = "JWT",
+                In = ParameterLocation.Header,
+                Description = "Enter JWT Bearer token."
+            });
+
+            c.AddSecurityRequirement(new OpenApiSecurityRequirement
+            {
+                {
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "Bearer"
+                        }
+                    },
+                    Array.Empty<string>()
+                }
+            });
         });
 
         // Add Application layer (MediatR, Validators)
@@ -44,6 +72,16 @@ public partial class Program
 
         // Add Infrastructure layer (DbContext, Repositories)
         builder.Services.AddInfrastructure(builder.Configuration);
+
+        builder.Services.AddAuthorization(options =>
+        {
+            options.AddPolicy(AuthorizationPolicies.ActiveUserPolicy, policy =>
+            {
+                policy.RequireAuthenticatedUser();
+                policy.AddRequirements(new ActiveUserRequirement());
+            });
+        });
+        builder.Services.AddSingleton<IAuthorizationHandler, ActiveUserRequirementHandler>();
 
         var app = builder.Build();
 
@@ -78,6 +116,7 @@ public partial class Program
 
         app.UseStaticFiles();
         app.UseHttpsRedirection();
+        app.UseAuthentication();
         app.UseAuthorization();
         app.MapControllers();
 
@@ -93,6 +132,8 @@ public partial class Program
             {
                 await db.Database.MigrateAsync();
             }
+
+            await IdentitySeeder.SeedAsync(scope.ServiceProvider);
         }
 
         app.MapGet("/", () =>

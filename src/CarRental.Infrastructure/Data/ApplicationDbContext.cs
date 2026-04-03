@@ -4,14 +4,18 @@ using CarRental.Domain.Common;
 using CarRental.Domain.Entities.Vehicles;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using CarRental.Domain.Entities.ImageEntities;
+using CarRental.Infrastructure.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace CarRental.Infrastructure.Data;
 
 /// <summary>
 /// EF Core database context for the application.
 /// </summary>
-public class ApplicationDbContext : DbContext
+public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 {
+    public DbSet<RevokedAccessToken> RevokedAccessTokens => Set<RevokedAccessToken>();
+    public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
     public DbSet<DamageVehicleImage> DamageVehicleImages => Set<DamageVehicleImage>();
     public DbSet<VehicleImage> VehicleImages => Set<VehicleImage>();
     public DbSet<BlockListCustomer> BlockListCustomers => Set<BlockListCustomer>();

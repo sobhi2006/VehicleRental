@@ -8,7 +8,8 @@ It covers:
 - operations (`DamageVehicles`, `MaintenanceVehicles`)
 - finance (`Payments`, `Invoices`, `InvoiceLines`)
 - safety/business controls (`BlockListCustomers`)
-- image upload management for vehicles and damage reports.
+- image upload management for vehicles and damage reports
+- security and access control with ASP.NET Core Identity + JWT + role/policy authorization.
 
 ## 1. Technology Stack
 
@@ -21,6 +22,8 @@ It covers:
 - AutoMapper
 - API Versioning (`Asp.Versioning.Mvc`)
 - Swagger (Swashbuckle)
+- ASP.NET Core Identity
+- JWT Bearer Authentication
 - xUnit + Moq + Coverlet (unit tests)
 
 ## 2. Solution Structure
@@ -62,7 +65,15 @@ CarRental/
 - `CarRental.API`: controllers + HTTP pipeline + Swagger + API versioning.
 - `CarRental.Application`: commands, queries, validators, mapping profiles, business services.
 - `CarRental.Domain`: entities, enums, interfaces, domain contracts.
-- `CarRental.Infrastructure`: EF Core `DbContext`, configurations, repositories, migrations.
+- `CarRental.Infrastructure`: EF Core `DbContext`, configurations, repositories, migrations, Identity implementation, JWT token generation.
+
+### Authentication and Authorization Design
+
+- `ApplicationUser` is implemented in Infrastructure and inherits `IdentityUser`.
+- Custom properties: `FirstName`, `LastName`, `IsActive`.
+- Identity entities are persisted through `ApplicationDbContext : IdentityDbContext<ApplicationUser>`.
+- Application layer uses interfaces (`IAuthService`, `IUserManagementService`) so controllers and handlers do not depend on Identity framework types.
+- API layer enforces authorization via roles and policies, including `ActiveUserPolicy`.
 
 ### Request Flow
 
@@ -88,6 +99,14 @@ CarRental/
 - Pagination: `pageNumber`, `pageSize` query parameters.
 - Root endpoint `/` returns discovered endpoints count and names.
 - Swagger endpoint: `/swagger`
+
+### Security Conventions
+
+- API uses JWT bearer tokens.
+- Protected endpoints require authenticated users and `ActiveUserPolicy`.
+- Base controller enforces role gate for shared modules: `Owner`, `Admin`, or `Labor`.
+- Management operations are restricted by role attributes on dedicated controllers (`UsersController`, `RolesController`).
+- Inactive users are blocked at login and blocked by policy-based authorization.
 
 ### File Upload Endpoints
 
@@ -116,8 +135,84 @@ Controllers currently available:
 - `InvoicesController`
 - `ReturnVehiclesController`
 - `BlockListCustomersController`
+- `AuthController`
+- `UsersController`
+- `RolesController`
 
-## 6. Business Rules Implemented
+## 6. Authentication and Authorization Features
+
+### Identity User
+
+`ApplicationUser` extends `IdentityUser` with:
+- `FirstName`
+- `LastName`
+- `IsActive`
+
+### Authentication (JWT)
+
+Login endpoint:
+- `POST /api/v1/Auth/login`
+
+JWT payload includes:
+- `sub` / `nameidentifier`: user id
+- `email`
+- role claims
+- `is_active` claim (required for active-user policy)
+
+### Authorization
+
+Roles:
+- `Owner`
+- `Admin`
+- `Labor`
+
+Policy:
+- `ActiveUserPolicy`
+
+Behavior:
+- Access is denied when `is_active` claim is `false`.
+- Policy is enforced centrally via authorization middleware and controller attributes.
+
+### User Management (`Owner` / `Admin`)
+
+User endpoints:
+- `GET /api/v1/Users`
+- `GET /api/v1/Users/me`
+- `PUT /api/v1/Users/me/password`
+- `GET /api/v1/Users/{userId}`
+- `POST /api/v1/Users`
+- `PUT /api/v1/Users`
+- `DELETE /api/v1/Users/{userId}`
+- `PATCH /api/v1/Users/{userId}/active/{isActive}`
+
+Supports:
+- create/update/delete users
+- activate/deactivate users
+
+### Role Management (`Owner` / `Admin`)
+
+Role endpoints:
+- `GET /api/v1/Roles`
+- `GET /api/v1/Roles/{roleId}`
+- `POST /api/v1/Roles`
+- `PUT /api/v1/Roles`
+- `DELETE /api/v1/Roles/{roleId}`
+- `POST /api/v1/Roles/{roleName}/users/{userId}`
+- `DELETE /api/v1/Roles/{roleName}/users/{userId}`
+
+Supports:
+- create/update/delete roles
+- assign role to user
+- unassign role from user
+
+### Role Seeding
+
+At startup, system seeds roles if missing:
+- `Owner`
+- `Admin`
+- `Labor`
+
+## 7. Business Rules Implemented
 
 ### Payments and Invoices
 
@@ -144,7 +239,7 @@ Controllers currently available:
 - `FeesBankIds` is accepted as a list and linked to return record.
 - Return flow updates/creates invoice fee lines for return fees.
 
-## 7. Configuration
+## 8. Configuration
 
 ### Connection Strings
 
@@ -154,6 +249,12 @@ Controllers currently available:
 {
    "ConnectionStrings": {
       "DefaultConnection": "Server=localhost;Port=3306;Database=CarRentalDb;User=root;Password=your_password;"
+   },
+   "Jwt": {
+      "Issuer": "CarRental.API",
+      "Audience": "CarRental.Client",
+      "Key": "ChangeThisToASecretKeyAtLeast32CharactersLong!",
+      "ExpiryMinutes": 60
    }
 }
 ```
@@ -164,11 +265,21 @@ Controllers currently available:
 {
    "ConnectionStrings": {
       "DefaultConnection": "Server=localhost;Port=3306;Database=CarRentalDev;User=root;Password=sa123456sa;"
+   },
+   "Jwt": {
+      "Issuer": "CarRental.API.Dev",
+      "Audience": "CarRental.Client.Dev",
+      "Key": "DevSecretKeyMustBeLongEnoughForJwtSigning123!",
+      "ExpiryMinutes": 120
    }
 }
+
+Important:
+- Replace JWT `Key` with a secure secret in non-development environments.
+- Keep `Issuer` and `Audience` consistent between token generation and validation.
 ```
 
-## 8. Run Locally (Step by Step)
+## 9. Run Locally (Step by Step)
 
 1. Go to solution root:
 
@@ -202,13 +313,17 @@ dotnet run --project src/CarRental.API/CarRental.API.csproj
 http://localhost:5000/swagger
 ```
 
-## 9. Database and Migrations
+## 10. Database and Migrations
 
 The API applies pending migrations automatically at startup in `Program.cs`:
 
 ```csharp
 await db.Database.MigrateAsync();
+await IdentitySeeder.SeedAsync(scope.ServiceProvider);
 ```
+
+Identity migration added:
+- `AddIdentityAndAuth`
 
 Manual migration commands:
 
@@ -217,7 +332,7 @@ dotnet ef migrations add <MigrationName> --project src/CarRental.Infrastructure 
 dotnet ef database update --project src/CarRental.Infrastructure --startup-project src/CarRental.API
 ```
 
-## 10. Docker
+## 11. Docker
 
 ### docker-compose services
 
@@ -236,7 +351,7 @@ API base URL in container mode:
 http://localhost:5000
 ```
 
-## 11. Testing
+## 12. Testing (Coming Soon)
 
 Run unit tests:
 
@@ -244,9 +359,19 @@ Run unit tests:
 dotnet test Tests/CarRental.Tests.Application.UnitTests/CarRental.Tests.Application.UnitTests.csproj
 ```
 
-Current test focus includes person service and person validators.
+Run integration tests:
 
-## 12. Useful Commands
+```bash
+dotnet test Tests/IntegrationTests/CarRental.Tests.API.IntegrationTests/CarRental.Tests.API.IntegrationTests.csproj
+```
+
+Authentication and authorization test coverage includes:
+- Login success for active user
+- Login failure for inactive user
+- Active-user policy blocks access when inactive claim is false
+- Role restriction checks for role-protected endpoints.
+
+## 13. Useful Commands
 
 ```bash
 # Build API project
@@ -259,9 +384,27 @@ dotnet publish src/CarRental.API/CarRental.API.csproj
 dotnet watch run --project src/CarRental.API/CarRental.API.csproj
 ```
 
-## 13. Request Examples
+## 14. Request Examples
 
 Use `src/CarRental.API/Request.http` as a quick API collection.
+
+### Example: Login
+
+```http
+POST /api/v1/Auth/login
+Content-Type: application/json
+
+{
+   "email": "admin@carrental.local",
+   "password": "P@ssw0rd!123"
+}
+```
+
+Use returned token:
+
+```http
+Authorization: Bearer <access_token>
+```
 
 Important contract updates to keep in mind:
 - `Payments` create/update requests should not include `status`.
@@ -281,6 +424,37 @@ Content-Type: application/json
    "amount": 100.50,
    "type": 0
 }
+```
+
+### Example: Create User (Owner/Admin)
+
+```http
+POST /api/v1/Users
+Authorization: Bearer <owner_or_admin_token>
+Content-Type: application/json
+
+{
+   "firstName": "Labor",
+   "lastName": "User",
+   "email": "labor@carrental.local",
+   "password": "P@ssw0rd!123",
+   "isActive": true,
+   "roles": ["Labor"]
+}
+```
+
+### Example: Assign Role To User
+
+```http
+POST /api/v1/Roles/Labor/users/{userId}
+Authorization: Bearer <owner_or_admin_token>
+```
+
+### Example: Unassign Role From User
+
+```http
+DELETE /api/v1/Roles/Labor/users/{userId}
+Authorization: Bearer <owner_or_admin_token>
 ```
 
 ### Example: Create Return Vehicle
@@ -316,7 +490,7 @@ curl -X POST "http://localhost:5000/api/v1/Vehicles" \
    -F "images=@/absolute/path/car.jpg"
 ```
 
-## 14. Scripts in Repository Root
+## 15. Scripts in Repository Root
 
 Outside the `CarRental/` folder there are two helper scripts:
 
@@ -325,10 +499,10 @@ Outside the `CarRental/` folder there are two helper scripts:
 
 These scripts are utility generators and are not required for running the existing CarRental API.
 
-## 15. Notes
+## 16. Notes
 
 - Enums are configured to store as strings in EF Core model configuration.
-- API currently has no authentication/authorization flow beyond `UseAuthorization()` middleware registration.
+- API now includes full Identity + JWT authentication and role/policy authorization.
 - The codebase contains some historical naming typos in folder names (for example `ReturnVehciles` in some paths), while controller routes are exposed as `ReturnVehicles`.
 
 ---
