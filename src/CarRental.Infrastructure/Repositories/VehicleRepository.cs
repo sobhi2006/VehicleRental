@@ -82,9 +82,9 @@ public class VehicleRepository : BaseRepository<Vehicle>, IVehicleRepository
             .ExecuteUpdateAsync(s => s.SetProperty(v => v.Status, maintenance), cancellationToken);
     }
 
-    public async Task UpdateCurrentMilage(decimal mileageAfter, CancellationToken cancellationToken)
+    public async Task UpdateCurrentMilage(long VehicleId, decimal mileageAfter, CancellationToken cancellationToken)
     {
-        await _dbSet.Where(v => v.Id == v.Id)
+        await _dbSet.Where(v => v.Id == VehicleId)
             .ExecuteUpdateAsync(s => s.SetProperty(v => v.CurrentMileage, mileageAfter), cancellationToken);
     }
 }

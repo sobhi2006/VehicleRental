@@ -16,6 +16,7 @@ public class ReturnVehicleService : IReturnVehicleService
     private DateTime _dropOffDateBooking;
     private DateTime _pickUpDateBooking;
     private decimal _MileageAfter;
+    private long _VehicleId;
 
     private readonly IReturnVehicleRepository _repository;
     private readonly IUnitOfWork _unitOfWork;
@@ -204,6 +205,7 @@ public class ReturnVehicleService : IReturnVehicleService
         }
         _dropOffDateBooking = bookingResult.Value.DropOffDate;
         _pickUpDateBooking = bookingResult.Value.PickUpDate;
+        _VehicleId = bookingResult.Value.VehicleId;
 
         if (request.ActualReturnDate < bookingResult.Value.PickUpDate)
         {
@@ -327,7 +329,7 @@ public class ReturnVehicleService : IReturnVehicleService
                     ? InvoiceStatus.Paid
                     : InvoiceStatus.Pending;
 
-        await _vehicleRepository.UpdateCurrentMilage(_MileageAfter, cancellationToken);
+        await _vehicleRepository.UpdateCurrentMilage(_VehicleId, _MileageAfter, cancellationToken);
 
         // await _invoiceRepository.UpdateAsync(invoice, cancellationToken);
         entity.Invoice = invoice;
