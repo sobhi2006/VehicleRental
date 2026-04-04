@@ -300,6 +300,8 @@ public class ReturnVehicleService : IReturnVehicleService
         var netCompletedAmount = await _paymentRepository.GetNetCompletedAmountByBookingIdAsync(entity.BookingId, cancellationToken);
         var totalAmount = returnLines.Sum(line => line.LineTotal);
 
+        await _vehicleRepository.UpdateCurrentMilage(_VehicleId, _MileageAfter, cancellationToken);
+
         if (invoice is null)
         {
             var newInvoice = new Invoice
@@ -328,8 +330,6 @@ public class ReturnVehicleService : IReturnVehicleService
         invoice.Status = Math.Min(netCompletedAmount, totalAmount) >= totalAmount
                     ? InvoiceStatus.Paid
                     : InvoiceStatus.Pending;
-
-        await _vehicleRepository.UpdateCurrentMilage(_VehicleId, _MileageAfter, cancellationToken);
 
         // await _invoiceRepository.UpdateAsync(invoice, cancellationToken);
         entity.Invoice = invoice;
