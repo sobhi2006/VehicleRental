@@ -4,6 +4,7 @@ using CarRental.Application.Interfaces;
 using CarRental.Application.Common.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using CarRental.Infrastructure.Data;
 
 namespace CarRental.Infrastructure.Identity;
 
@@ -11,11 +12,13 @@ public sealed class UserManagementService : IUserManagementService
 {
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly RoleManager<IdentityRole> _roleManager;
+    private readonly ApplicationDbContext _dbContext;
 
-    public UserManagementService(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
+    public UserManagementService(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, ApplicationDbContext dbContext)
     {
         _userManager = userManager;
         _roleManager = roleManager;
+        _dbContext = dbContext;
     }
 
     public async Task<Result<PaginatedList<UserDto>>> GetAllAsync(int pageNumber, int pageSize, CancellationToken cancellationToken)
@@ -30,19 +33,60 @@ public sealed class UserManagementService : IUserManagementService
             return Result<PaginatedList<UserDto>>.Failure("PageSize must be greater than 0.");
         }
 
-        var query = _userManager.Users.OrderBy(x => x.Email);
+        var query = _userManager.Users
+        .AsNoTracking()
+        .OrderBy(x => x.Email);
+
         var totalCount = await query.CountAsync(cancellationToken);
+
         var users = await query
             .Skip((pageNumber - 1) * pageSize)
             .Take(pageSize)
+            .Select(u => new
+            {
+                u.Id,
+                u.FirstName,
+                u.LastName,
+                u.Email,
+                u.IsActive
+            })
             .ToListAsync(cancellationToken);
 
-        var mapped = new List<UserDto>(users.Count);
+        var userIds = users.Select(u => u.Id).ToList();
 
-        foreach (var user in users)
-        {
-            mapped.Add(await MapAsync(user));
-        }
+        var userRoleRows = await _dbContext
+            .Set<IdentityUserRole<string>>()
+            .AsNoTracking()
+            .Where(ur => userIds.Contains(ur.UserId))
+            .Join(
+                _roleManager.Roles.AsNoTracking(),
+                ur => ur.RoleId,
+                r => r.Id,
+                (ur, r) => new { ur.UserId, RoleName = r.Name! })
+            .ToListAsync(cancellationToken);
+
+        var rolesByUserId = userRoleRows
+            .GroupBy(x => x.UserId)
+            .ToDictionary(
+                g => g.Key,
+                g => (IList<string>)g
+                    .Select(x => x.RoleName)
+                    .Distinct()
+                    .ToList());
+
+        var mapped = users
+            .Select(u => new UserDto
+            {
+                Id = u.Id,
+                FirstName = u.FirstName,
+                LastName = u.LastName,
+                Email = u.Email ?? string.Empty,
+                IsActive = u.IsActive,
+                Roles = rolesByUserId.TryGetValue(u.Id, out var roles)
+                    ? roles
+                    : new List<string>()
+            })
+            .ToList();
 
         var paginated = new PaginatedList<UserDto>(mapped, totalCount, pageNumber, pageSize);
         return Result<PaginatedList<UserDto>>.Success(paginated);
