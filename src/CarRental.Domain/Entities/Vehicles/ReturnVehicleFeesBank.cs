@@ -1,5 +1,4 @@
 using CarRental.Domain.Common;
-using CarRental.Domain.Entities;
 
 namespace CarRental.Domain.Entities.Vehicles;
 

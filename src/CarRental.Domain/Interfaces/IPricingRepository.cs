@@ -1,4 +1,3 @@
-using CarRental.Domain.Entities;
 using CarRental.Domain.Entities.Vehicles;
 
 namespace CarRental.Domain.Interfaces;
