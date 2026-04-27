@@ -1,12 +1,7 @@
-using Asp.Versioning;
 using FluentValidation;
-using CarRental.Application;
-using CarRental.Infrastructure;
-using Microsoft.OpenApi.Models;
+using CarRental.API;
 using CarRental.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
-using CarRental.API.Authorization;
-using Microsoft.AspNetCore.Authorization;
 using CarRental.Infrastructure.Identity;
 
 /// <summary>
@@ -22,66 +17,7 @@ public partial class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        builder.Services.AddControllers();
-        builder.Services.AddApiVersioning(options =>
-            {
-                options.DefaultApiVersion = new ApiVersion(1.0);
-                options.AssumeDefaultVersionWhenUnspecified = true;
-                options.ReportApiVersions = true;
-            })
-            .AddApiExplorer(options =>
-            {
-                options.GroupNameFormat = "'v'V";
-                options.SubstituteApiVersionInUrl = true;
-            });
-
-        builder.Services.AddEndpointsApiExplorer();
-        builder.Services.AddSwaggerGen(c =>
-        {
-            c.SwaggerDoc("v1", new OpenApiInfo { Title = "CarRental API", Version = "v1" });
-            c.DocInclusionPredicate((docName, apiDesc) => apiDesc.GroupName == docName);
-
-            c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-            {
-                Name = "Authorization",
-                Type = SecuritySchemeType.Http,
-                Scheme = "bearer",
-                BearerFormat = "JWT",
-                In = ParameterLocation.Header,
-                Description = "Enter JWT Bearer token."
-            });
-
-            c.AddSecurityRequirement(new OpenApiSecurityRequirement
-            {
-                {
-                    new OpenApiSecurityScheme
-                    {
-                        Reference = new OpenApiReference
-                        {
-                            Type = ReferenceType.SecurityScheme,
-                            Id = "Bearer"
-                        }
-                    },
-                    Array.Empty<string>()
-                }
-            });
-        });
-
-        // Add Application layer (MediatR, Validators)
-        builder.Services.AddApplication();
-
-        // Add Infrastructure layer (DbContext, Repositories)
-        builder.Services.AddInfrastructure(builder.Configuration);
-
-        builder.Services.AddAuthorization(options =>
-        {
-            options.AddPolicy(AuthorizationPolicies.ActiveUserPolicy, policy =>
-            {
-                policy.RequireAuthenticatedUser();
-                policy.AddRequirements(new ActiveUserRequirement());
-            });
-        });
-        builder.Services.AddSingleton<IAuthorizationHandler, ActiveUserRequirementHandler>();
+        builder.Services.RegisterDependencies(builder.Configuration);
 
         var app = builder.Build();
 
@@ -120,7 +56,7 @@ public partial class Program
         app.UseAuthorization();
         app.MapControllers();
 
-        using(var scope = app.Services.CreateScope())
+        using (var scope = app.Services.CreateScope())
         {
             var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
@@ -141,7 +77,7 @@ public partial class Program
             var Endpoints = app.Services.GetRequiredService<EndpointDataSource>().Endpoints;
             var NumberOfEndpoints = Endpoints.Count - 1;
             var NamesOfEndpoints = Endpoints.Select(e => e.DisplayName).Where(name => !string.IsNullOrEmpty(name)).ToList();
-            return $"\t\t\t\t\t\t\t\t\t\t\t\tThe Number Of Endpoints In This Project Is {NumberOfEndpoints}\n\n"+
+            return $"\t\t\t\t\t\t\t\t\t\t\t\tThe Number Of Endpoints In This Project Is {NumberOfEndpoints}\n\n" +
                    $"Endpoints:\n{string.Join("\n", NamesOfEndpoints)}";
         });
 
